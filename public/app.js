@@ -260,21 +260,20 @@ function renderKey() {
   ];
   for (const [kind, label] of items) {
     const span = document.createElement("span");
-    const sw = document.createElement("i"); sw.className = "sw " + kind;
-    span.append(sw, label);
+    const box = document.createElement("i"); box.className = "kbox cell " + kind;
     const h = at[kind];
-    if (h) {
-      const s = sq(h.i, h.j);
-      const b = document.createElement("b"); b.textContent = s ? s.initials : "open";
-      span.append(" → ", b);
-    }
+    const s = h ? sq(h.i, h.j) : null;
+    box.textContent = h ? (s ? s.initials : "+") : "";
+    span.append(box, label);
     key.appendChild(span);
   }
   const br = document.createElement("span"); br.className = "row-break"; key.appendChild(br);
-  for (const [cls, label] of [["pend", "Reserved, not paid"], ["open", "+ Open"]]) {
+  for (const [cls, label] of [["pend", "Reserved, not paid"], ["open", "Open"]]) {
     const span = document.createElement("span");
-    const sw = document.createElement("i"); sw.className = "sw " + cls;
-    span.append(sw, label); key.appendChild(span);
+    const box = document.createElement("i");
+    box.className = "kbox cell " + (cls === "pend" ? "pending" : "open");
+    box.textContent = cls === "open" ? "+" : "";
+    span.append(box, label); key.appendChild(span);
   }
 }
 
