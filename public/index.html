@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Wright SB Squares Pool</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Saira+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Wright SB Squares Pool</h1>
+      <p id="title">Super Bowl</p>
+    </div>
+    <span class="chip" id="liveChip"><span class="dot"></span>Example board</span>
+  </header>
+
+  <section class="scoreboard" aria-label="Score">
+    <div class="team row">
+      <span class="side">Left side</span>
+      <span class="name" id="rowName">Team</span>
+      <span class="score" id="rowScore">0</span>
+    </div>
+    <div class="clock"><strong id="period">1st Qtr</strong><span id="clock"></span></div>
+    <div class="team col">
+      <span class="side">Across top</span>
+      <span class="name" id="colName">Team</span>
+      <span class="score" id="colScore">0</span>
+    </div>
+  </section>
+
+  <section class="board-card" aria-label="Pool board">
+    <div class="board" id="board"></div>
+    <p class="detail" id="detail" aria-live="polite"></p>
+  </section>
+
+  <section class="panel" aria-label="Who wins next">
+    <h2>Winning now</h2>
+    <div class="now" id="now">
+      <div>
+        <div class="big" id="nowWho">—</div>
+        <div class="small" id="nowScore"></div>
+      </div>
+    </div>
+    <h2>If the next score is…</h2>
+    <ul class="next" id="nextList"></ul>
+  </section>
+
+  <section class="panel" aria-label="Prizes">
+    <h2>Prizes</h2>
+    <div class="prizes" id="prizes"></div>
+  </section>
+
+  <section class="panel" aria-label="Find my squares">
+    <h2>Find my squares</h2>
+    <div class="find">
+      <label for="findName" class="visually-hidden" hidden>Your name</label>
+      <select id="findName"></select>
+      <span class="count" id="findCount"></span>
+    </div>
+  </section>
+
+  <section class="try" aria-label="Preview controls">
+    <p><b>Preview only.</b> On game day the score comes from ESPN automatically. Tap these to watch the board change.</p>
+    <div class="btns">
+      <button type="button" class="r" data-score="r:3">Eagles +3</button>
+      <button type="button" class="r" data-score="r:7">Eagles +7</button>
+      <button type="button" class="c" data-score="c:3">Chiefs +3</button>
+      <button type="button" class="c" data-score="c:7">Chiefs +7</button>
+      <button type="button" data-score="reset:0">Back to 0–0</button>
+    </div>
+  </section>
+
+  <p class="foot">Example names and teams. Your real board, teams and prizes go in when the organizer screen is built.</p>
+</main>
+<script src="logic.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

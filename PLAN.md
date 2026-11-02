@@ -17,6 +17,12 @@ Firebase project ID: `wright-sb-squares-pool` → guest link `wright-sb-squares-
 ## Build steps
 1. Firebase project — done
 2. GitHub repo connected — done
-3. Build the app (guest board first)
+3. Build the app
+   - 3a. Guest board (example data) — done, awaiting approval
+   - 3b. Shared online board (Firebase)
+   - 3c. Live ESPN score
+   - 3d. Guests reserve squares + pay buttons
+   - 3e. Organizer screen
+   - 3f. Party chat
 4. Link GitHub → Firebase so it deploys automatically
 5. Test on phone and on regular NFL Sundays
