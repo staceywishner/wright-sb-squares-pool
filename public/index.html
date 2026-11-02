@@ -21,6 +21,8 @@
 
   <p class="game-title" id="title">Super Bowl</p>
 
+  <p class="notice" id="notice" role="status" hidden></p>
+
   <section class="scoreboard" aria-label="Score">
     <div class="team row">
       <span class="logo" id="rowLogo" aria-hidden="true"></span>
@@ -60,7 +62,7 @@
   </section>
 
 
-  <section class="try" aria-label="Preview controls">
+  <section class="try" id="tryPanel" aria-label="Preview controls">
     <p><b>Preview only.</b> On game day the score comes from ESPN automatically. Tap these to watch the board change.</p>
     <div class="btns">
       <button type="button" class="r" data-score="r:3">Eagles +3</button>
@@ -71,9 +73,11 @@
     </div>
   </section>
 
-  <p class="foot">Example names and teams. Your real board, teams and prizes go in when the organizer screen is built.</p>
+  <p class="foot" id="foot">Example names and teams. Your real board, teams and prizes go in when the organizer screen is built.</p>
 </main>
+<script src="firebase-config.js"></script>
 <script src="logic.js"></script>
 <script src="app.js"></script>
+<script type="module" src="data.js"></script>
 </body>
 </html>

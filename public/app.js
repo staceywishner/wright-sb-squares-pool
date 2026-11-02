@@ -1,5 +1,5 @@
-// Guest board. For now it runs on EXAMPLE data so the look can be approved.
-// Later steps swap EXAMPLE for the shared online board (Firebase) and the live ESPN score.
+// Guest board. Shows the shared online board (loaded by data.js from Firebase).
+// Add ?example to the address to see the built-in example board instead.
 
 const { highlights, periodWinners, PRIORITY } = window.PoolLogic;
 
@@ -47,11 +47,53 @@ const EXAMPLE = (() => {
   };
 })();
 
+const $ = (id) => document.getElementById(id);
 let pool = EXAMPLE;
 let selected = null;     // index of tapped square
+let live = false;        // true once the shared board has loaded
+
+// Fill in anything the saved board doesn't have yet, so the page never breaks.
+function normalize(p) {
+  const team = (t, fallback) => ({ name: fallback, abbr: "", color: "#555555", logo: null, ...(t || {}) });
+  const squares = Array.from({ length: 100 }, (_, i) => (p.squares && p.squares[i]) || null);
+  return {
+    title: p.title || "Super Bowl",
+    rowTeam: team(p.rowTeam, "Team 1"),
+    colTeam: team(p.colTeam, "Team 2"),
+    rowNums: Array.isArray(p.rowNums) && p.rowNums.length === 10 ? p.rowNums : null,
+    colNums: Array.isArray(p.colNums) && p.colNums.length === 10 ? p.colNums : null,
+    squares,
+    pricePerSquare: p.pricePerSquare ?? EXAMPLE.pricePerSquare,
+    prizes: p.prizes || EXAMPLE.prizes,
+    overtime: p.overtime || EXAMPLE.overtime,
+    finished: p.finished || {},
+    game: { rowScore: 0, colScore: 0, period: 1, clock: "", state: "pre", ...(p.game || {}) },
+  };
+}
+
+function showNotice(text) {
+  const n = $("notice");
+  n.hidden = !text;
+  n.textContent = text || "";
+}
+
+// data.js calls these when the shared board loads or changes.
+window.SquaresApp = {
+  setPool(p) {
+    live = true;
+    document.body.classList.remove("waiting");
+    pool = normalize(p);
+    $("tryPanel").hidden = true;
+    $("foot").hidden = true;
+    $("liveChip").lastChild.textContent = pool.game.state === "in" ? "Live" : "Pool board";
+    $("liveChip").classList.toggle("live", pool.game.state === "in");
+    showNotice("");
+    render();
+  },
+  showNotice,
+};
 
 // ---------- helpers ----------
-const $ = (id) => document.getElementById(id);
 const sq = (i, j) => pool.squares[i * 10 + j];
 const who = (s) => (s ? s.name : "Open square");
 const money = (n) => "$" + n.toLocaleString("en-US");
@@ -151,7 +193,7 @@ function renderBoard() {
     d.hidden = false;
     const i = Math.floor(selected / 10), j = selected % 10, s = pool.squares[selected];
     const rowD = showNums ? pool.rowNums[i] : "?", colD = showNums ? pool.colNums[j] : "?";
-    const status = !s ? "Open — reserving opens in a later step" : s.status === "pending" ? "Reserved, waiting on payment" : "Paid";
+    const status = !s ? "Open" : s.status === "pending" ? "Reserved, waiting on payment" : "Paid";
     const R = pool.rowTeam.name, C = pool.colTeam.name;
     const meaning = { win: "Winning now", rev: "Reverse winner", rowFG: `Wins if ${R} kick a field goal`, rowTD: `Wins if ${R} score a touchdown`, colFG: `Wins if ${C} kick a field goal`, colTD: `Wins if ${C} score a touchdown` };
     const here = hl.filter((h) => h.i === i && h.j === j).map((h) => meaning[h.kind]);
@@ -301,3 +343,14 @@ document.querySelectorAll("[data-score]").forEach((btn) => {
 });
 
 render();
+
+// On the real site, never show the example names: hide the board until the shared board loads.
+if (!new URLSearchParams(location.search).has("example")) {
+  document.body.classList.add("waiting");
+  showNotice("Loading the pool board…");
+  setTimeout(() => {
+    if (!live && $("notice").textContent.startsWith("Loading")) {
+      showNotice("Couldn't load the pool board. Check your internet connection and refresh the page.");
+    }
+  }, 15000);
+}

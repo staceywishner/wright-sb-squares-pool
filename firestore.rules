@@ -1,0 +1,92 @@
+rules_version = '2';
+
+// Security rules for the Wright SB Squares Pool.
+// - Anyone with the link can READ the board.
+// - Only the organizer can change settings, scores, payments, or remove names.
+// - A guest can reserve open squares for themselves (one at a time), up to the
+//   pool's per-guest limit, only while the board is unlocked. Reserved squares
+//   start as "pending" until the organizer marks them paid.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+
+    function isOrganizer() {
+      return signedIn()
+        && request.auth.token.email == 'david.wright333@gmail.com'
+        && request.auth.token.email_verified == true;
+    }
+
+    function poolData() {
+      return get(/databases/$(database)/documents/pool/main).data;
+    }
+
+    function guestPath() {
+      return /databases/$(database)/documents/guests/$(request.auth.uid);
+    }
+
+    function squarePath(n) {
+      return /databases/$(database)/documents/squares/$(n);
+    }
+
+    // The square being added to a guest's list must be created in the same save,
+    // must not have existed before, and must belong to that guest.
+    function newSquareIsMine(n) {
+      return n is string
+        && !exists(squarePath(n))
+        && existsAfter(squarePath(n))
+        && getAfter(squarePath(n)).data.ownerUid == request.auth.uid;
+    }
+
+    // Pool settings, teams, numbers, prizes, score.
+    match /pool/main {
+      allow read: if true;
+      allow write: if isOrganizer();
+    }
+
+    // The 100 squares, stored as "0" … "99".
+    match /squares/{n} {
+      allow read: if true;
+      allow write: if isOrganizer();
+
+      allow create: if signedIn()
+        && n.matches('^[0-9]{1,2}$')
+        && poolData().get('locked', false) != true
+        && request.resource.data.keys().hasOnly(['name', 'initials', 'status', 'ownerUid', 'reservedAt'])
+        && request.resource.data.status == 'pending'
+        && request.resource.data.ownerUid == request.auth.uid
+        && request.resource.data.reservedAt == request.time
+        && request.resource.data.name is string
+        && request.resource.data.name.size() >= 1 && request.resource.data.name.size() <= 40
+        && request.resource.data.initials is string
+        && request.resource.data.initials.size() >= 1 && request.resource.data.initials.size() <= 4
+        && existsAfter(guestPath())
+        && getAfter(guestPath()).data.squares.hasAny([n]);
+    }
+
+    // Each guest's list of reserved squares (enforces the per-guest limit).
+    match /guests/{uid} {
+      allow read: if signedIn() && (request.auth.uid == uid || isOrganizer());
+      allow write: if isOrganizer();
+
+      allow create: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['squares'])
+        && request.resource.data.squares.size() == 1
+        && request.resource.data.squares.size() <= poolData().get('maxPerGuest', 10)
+        && newSquareIsMine(request.resource.data.squares[0]);
+
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['squares'])
+        && request.resource.data.squares.size() == resource.data.squares.size() + 1
+        && request.resource.data.squares.size() <= poolData().get('maxPerGuest', 10)
+        && request.resource.data.squares[0:resource.data.squares.size()] == resource.data.squares
+        && newSquareIsMine(request.resource.data.squares[resource.data.squares.size()]);
+    }
+
+    // Party chat (built in a later step).
+    match /chat/{id} {
+      allow read: if true;
+      allow write: if isOrganizer();
+    }
+  }
+}

@@ -66,6 +66,12 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
   margin: -4px 0 0; text-align: center; font-family: var(--font-display); font-weight: 700;
   font-size: 24px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.1;
 }
+body.waiting .scoreboard, body.waiting .board-card, body.waiting .panel,
+body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
+.notice {
+  margin: 0; padding: 12px 14px; border-radius: var(--radius); background: var(--surface);
+  border: 1px solid var(--line); font-size: 14px; text-align: center;
+}
 .chip {
   display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
   font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;

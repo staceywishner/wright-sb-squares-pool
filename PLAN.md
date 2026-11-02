@@ -1,6 +1,8 @@
 # Wright SB Squares Pool — build plan
 
 Firebase project ID: `wright-sb-squares-pool` → guest link `wright-sb-squares-pool.web.app`
+Organizer (only account that can change the board): david.wright333@gmail.com
+Firebase: Firestore (nam5), Auth: Anonymous + Google enabled. Free Spark plan.
 
 ## Approved features
 - Guest link: any phone/computer browser, no downloads, no accounts.
@@ -22,7 +24,7 @@ Firebase project ID: `wright-sb-squares-pool` → guest link `wright-sb-squares-
 2. GitHub repo connected — done
 3. Build the app
    - 3a. Guest board (example data) — done, awaiting approval
-   - 3b. Shared online board (Firebase)
+   - 3b. Shared online board (Firebase) — code + security rules written; rules to be published
    - 3c. Live ESPN score
    - 3d. Guests reserve squares + pay buttons
    - 3e. Organizer screen
