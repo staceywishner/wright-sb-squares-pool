@@ -12,7 +12,9 @@ Firebase project ID: `wright-sb-squares-pool` → guest link `wright-sb-squares-
 - (Removed at Stacey's request: "Find my squares")
 - Live ESPN score for everyone, ~30–60s behind TV.
 - Highlighting matches the Excel sheet: current winner, reverse winner, next FG/TD for each team.
-- Quarter winners + payouts automatic (1st Q, Half, 3rd Q, Final; OT counts toward Final).
+- Quarter winners + payouts automatic, each with its own Winner and Reverse Winner box. $25/square, $2,500 total:
+  1st Q $250 / rev $50 · Halftime $500 / rev $100 · 3rd Q $250 / rev $50 · Final $1,000 / rev $300.
+  Overtime: end-of-regulation winner $250 / rev $50; final-score winner $750 / rev $250.
 - "Find my squares" and live party chat with cheer buttons.
 
 ## Build steps

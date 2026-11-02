@@ -32,13 +32,15 @@ const EXAMPLE = (() => {
     rowNums: [6, 8, 9, 7, 5, 3, 0, 4, 1, 2],
     colNums: [4, 8, 2, 6, 5, 9, 0, 7, 1, 3],
     squares,
-    pricePerSquare: 20,
+    pricePerSquare: 25,
     prizes: [
       { key: "q1", label: "1st Quarter", amount: 250, reverse: 50 },
       { key: "half", label: "Halftime", amount: 500, reverse: 100 },
       { key: "q3", label: "3rd Quarter", amount: 250, reverse: 50 },
       { key: "final", label: "Final", amount: 1000, reverse: 300 },
     ],
+    // If the game goes to overtime, the Final prize is split like this.
+    overtime: { regulation: { amount: 250, reverse: 50 }, final: { amount: 750, reverse: 250 } },
     // Cumulative score at the end of each finished period.
     finished: { q1: [7, 3], half: [10, 13] },
     game: { rowScore: 17, colScore: 13, period: 3, clock: "8:12", state: "in" },
@@ -202,35 +204,46 @@ function renderPrizes() {
   box.innerHTML = "";
   const g = pool.game;
   const liveKey = g.state !== "in" ? null : g.period <= 1 ? "q1" : g.period === 2 ? "half" : g.period === 3 ? "q3" : "final";
+  const total = pool.prizes.reduce((t, p) => t + p.amount + p.reverse, 0);
+  $("pot").textContent = `${money(pool.pricePerSquare)} a square · ${money(total)} total`;
+
+  const cell = (kind, title, amount, holder) => {
+    const c = document.createElement("div");
+    c.className = "pbox " + kind;
+    const t = document.createElement("span"); t.className = "p-kind"; t.textContent = title;
+    const amt = document.createElement("span"); amt.className = "p-amt"; amt.textContent = money(amount);
+    const w = document.createElement("span"); w.className = "p-who"; w.textContent = holder;
+    c.append(t, amt, w);
+    return c;
+  };
+
   for (const p of pool.prizes) {
-    const div = document.createElement("div");
     const done = pool.finished[p.key] || (p.key === "final" && g.state === "post" ? [g.rowScore, g.colScore] : null);
-    div.className = "prize" + (done ? " done" : p.key === liveKey ? " live" : "");
-    const lines = [
-      `<span class="p-label"></span>`,
-      `<span class="p-amt"></span>`,
-      `<span class="p-rev"></span>`,
-      `<span class="p-who"></span>`,
-    ];
-    div.innerHTML = lines.join("");
-    div.querySelector(".p-label").textContent = p.label;
-    div.querySelector(".p-amt").textContent = money(p.amount);
-    div.querySelector(".p-rev").textContent = `Reverse ${money(p.reverse)}`;
-    const whoEl = div.querySelector(".p-who");
+    const row = document.createElement("div");
+    row.className = "prize" + (done ? " done" : p.key === liveKey ? " live" : "");
+    const head = document.createElement("div"); head.className = "p-label";
+    head.textContent = p.label;
+    const status = document.createElement("span"); status.className = "p-status";
+    let winName = "", revName = "";
     if (done && numbersShown()) {
       const pw = periodWinners(pool.rowNums, pool.colNums, done[0], done[1]);
-      const winName = pw.win ? who(sq(pw.win.i, pw.win.j)) : "—";
-      const revName = pw.rev ? who(sq(pw.rev.i, pw.rev.j)) : "same square";
-      whoEl.innerHTML = "";
-      const b = document.createElement("b"); b.textContent = winName;
-      whoEl.append(b, ` (${done[0]}–${done[1]}) · Reverse: ${revName}`);
+      winName = pw.win ? who(sq(pw.win.i, pw.win.j)) : "—";
+      revName = pw.rev ? who(sq(pw.rev.i, pw.rev.j)) : "Same square as winner";
+      status.textContent = `${pool.rowTeam.name} ${done[0]} – ${pool.colTeam.name} ${done[1]}`;
     } else {
-      whoEl.textContent = p.key === liveKey ? "In progress" : "Not played yet";
+      status.textContent = p.key === liveKey ? "In progress" : "Not played yet";
     }
-    box.appendChild(div);
+    head.appendChild(status);
+    row.append(head, cell("win", "Winner", p.amount, winName || "—"), cell("rev", "Reverse winner", p.reverse, revName || "—"));
+    if (p.key === "final" && pool.overtime) {
+      const o = pool.overtime;
+      const note = document.createElement("p"); note.className = "p-note";
+      note.textContent = `If there's overtime: end of regulation pays ${money(o.regulation.amount)} (reverse ${money(o.regulation.reverse)}), final score pays ${money(o.final.amount)} (reverse ${money(o.final.reverse)}).`;
+      row.appendChild(note);
+    }
+    box.appendChild(row);
   }
 }
-
 
 // Color key under the board, with the initials of whoever holds each highlighted square.
 function renderKey() {
