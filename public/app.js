@@ -27,8 +27,8 @@ const EXAMPLE = (() => {
 
   return {
     title: "Super Bowl LXI",
-    rowTeam: { name: "Eagles", color: "#004C54" },
-    colTeam: { name: "Chiefs", color: "#E31837" },
+    rowTeam: { name: "Eagles", abbr: "PHI", color: "#004C54", logo: null },
+    colTeam: { name: "Chiefs", abbr: "KC", color: "#E31837", logo: null },
     rowNums: [6, 8, 9, 7, 5, 3, 0, 4, 1, 2],
     colNums: [4, 8, 2, 6, 5, 9, 0, 7, 1, 3],
     squares,
@@ -64,12 +64,29 @@ function setTeamColors() {
   document.documentElement.style.setProperty("--col", pool.colTeam.color);
 }
 
+// Team logo: a real image when one is supplied (ESPN feed or organizer upload),
+// otherwise a team-color badge with the team's abbreviation.
+function setLogo(el, team) {
+  el.innerHTML = "";
+  el.classList.toggle("img", !!team.logo);
+  if (team.logo) {
+    const img = document.createElement("img");
+    img.src = team.logo; img.alt = "";
+    img.onerror = () => { el.classList.remove("img"); el.textContent = team.abbr || ""; };
+    el.appendChild(img);
+  } else {
+    el.textContent = team.abbr || "";
+  }
+}
+
 // ---------- render ----------
 function renderScoreboard() {
   const g = pool.game;
   $("title").textContent = pool.title;
   $("rowName").textContent = pool.rowTeam.name;
   $("colName").textContent = pool.colTeam.name;
+  setLogo($("rowLogo"), pool.rowTeam);
+  setLogo($("colLogo"), pool.colTeam);
   $("rowScore").textContent = g.rowScore;
   $("colScore").textContent = g.colScore;
   $("period").textContent = g.state === "post" ? "Final" : g.state === "pre" ? "Kickoff" : periodName(g.period);
