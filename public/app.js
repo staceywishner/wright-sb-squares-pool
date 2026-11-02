@@ -143,8 +143,10 @@ function renderBoard() {
   // Detail line for a tapped square
   const d = $("detail");
   if (selected == null) {
-    d.innerHTML = "Tap any square to see whose it is.";
+    d.innerHTML = "";
+    d.hidden = true;
   } else {
+    d.hidden = false;
     const i = Math.floor(selected / 10), j = selected % 10, s = pool.squares[selected];
     const rowD = showNums ? pool.rowNums[i] : "?", colD = showNums ? pool.colNums[j] : "?";
     const status = !s ? "Open — reserving opens in a later step" : s.status === "pending" ? "Reserved, waiting on payment" : "Paid";
