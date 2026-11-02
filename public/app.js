@@ -134,9 +134,12 @@ function renderBoard() {
     const i = Math.floor(selected / 10), j = selected % 10, s = pool.squares[selected];
     const rowD = showNums ? pool.rowNums[i] : "?", colD = showNums ? pool.colNums[j] : "?";
     const status = !s ? "Open — reserving opens in a later step" : s.status === "pending" ? "Reserved, waiting on payment" : "Paid";
+    const R = pool.rowTeam.name, C = pool.colTeam.name;
+    const meaning = { win: "Winning now", rev: "Reverse winner", rowFG: `Wins if ${R} kick a field goal`, rowTD: `Wins if ${R} score a touchdown`, colFG: `Wins if ${C} kick a field goal`, colTD: `Wins if ${C} score a touchdown` };
+    const here = hl.filter((h) => h.i === i && h.j === j).map((h) => meaning[h.kind]);
     d.innerHTML = "";
     const b = document.createElement("b"); b.textContent = who(s);
-    d.append(b, ` · ${pool.rowTeam.name} ${rowD} / ${pool.colTeam.name} ${colD} · ${status}`);
+    d.append(b, ` · ${R} ${rowD} / ${C} ${colD} · ${status}${here.length ? " · " + here.join(", ") : ""}`);
   }
 }
 

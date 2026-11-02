@@ -8,9 +8,11 @@
   --line: #d3dbd4;
   --turf: #1d6a3a;
   --turf-ink: #ffffff;
-  --win: #d8ff3a;
+  --win: #ffff00;
   --win-ink: #15211a;
-  --rev: #b3c8f4;
+  --rev: #39ff14;
+  --next: #ff1f1f;
+  --next-ink: #ffffff;
   --pending: #fff2c4;
   --tint-base: #ffffff;
   --row: #004c54;
@@ -22,12 +24,12 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #0e1611; --surface: #16211a; --ink: #e6eee8; --muted: #9caba2; --line: #2a3a30;
-    --turf: #3fa766; --win: #cdfc2c; --rev: #8faae6; --pending: #3b3417; --tint-base: #cdd6d0; color-scheme: dark;
+    --turf: #3fa766; --win: #ffff00; --rev: #39ff14; --pending: #3b3417; --tint-base: #cdd6d0; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #0e1611; --surface: #16211a; --ink: #e6eee8; --muted: #9caba2; --line: #2a3a30;
-  --turf: #3fa766; --win: #cdfc2c; --rev: #8faae6; --pending: #3b3417; --tint-base: #cdd6d0; color-scheme: dark;
+  --turf: #3fa766; --win: #ffff00; --rev: #39ff14; --pending: #3b3417; --tint-base: #cdd6d0; color-scheme: dark;
 }
 
 * { box-sizing: border-box; }
@@ -126,12 +128,8 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
   position: absolute; right: 1px; bottom: 1px; font-size: 7px; font-weight: 700; letter-spacing: 0.02em;
   line-height: 1; padding: 1px 2px; border-radius: 2px; background: var(--surface); color: var(--ink);
 }
-.cell.rowFG { background: color-mix(in srgb, var(--row) 24%, var(--tint-base)); }
-.cell.rowTD { background: color-mix(in srgb, var(--row) 50%, var(--tint-base)); }
-.cell.colFG { background: color-mix(in srgb, var(--col) 22%, var(--tint-base)); }
-.cell.colTD { background: color-mix(in srgb, var(--col) 48%, var(--tint-base)); }
-.cell.rev { background: var(--rev); color: #15211a; }
-.cell.rowFG, .cell.rowTD, .cell.colFG, .cell.colTD { color: #15211a; }
+.cell.rowFG, .cell.rowTD, .cell.colFG, .cell.colTD { background: var(--next); color: var(--next-ink); border-color: var(--next); }
+.cell.rev { background: var(--rev); color: #15211a; border-color: #15211a; }
 .cell.win { background: var(--win); color: var(--win-ink); border-color: var(--win-ink); box-shadow: 0 0 0 2px var(--win); z-index: 1; }
 .cell.mine { outline: 3px solid var(--ink); outline-offset: -3px; }
 .cell.selected { outline: 3px dashed var(--turf); outline-offset: -3px; }
@@ -140,6 +138,8 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
   @keyframes glow { 50% { box-shadow: 0 0 0 4px var(--win); } }
 }
 
+.key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 2px 0; font-size: 12px; color: var(--muted); }
+.key span { display: inline-flex; align-items: center; gap: 6px; }
 .detail { margin: 10px 2px 0; min-height: 22px; font-size: 14px; color: var(--muted); }
 .detail b { color: var(--ink); }
 
@@ -157,12 +157,11 @@ h2 {
 .next { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .next li { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .next li:last-child { border-bottom: 0; }
-.sw { width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); }
+.sw { display: inline-block; flex: none; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); }
 .sw.win { background: var(--win); } .sw.rev { background: var(--rev); }
-.sw.rowFG { background: color-mix(in srgb, var(--row) 24%, var(--tint-base)); }
-.sw.rowTD { background: color-mix(in srgb, var(--row) 50%, var(--tint-base)); }
-.sw.colFG { background: color-mix(in srgb, var(--col) 22%, var(--tint-base)); }
-.sw.colTD { background: color-mix(in srgb, var(--col) 48%, var(--tint-base)); }
+.sw.rowFG, .sw.rowTD, .sw.colFG, .sw.colTD, .sw.next { background: var(--next); }
+.sw.pend { background: repeating-linear-gradient(135deg, var(--pending) 0 3px, var(--surface) 3px 6px); }
+.sw.open { background: var(--surface); }
 .next .what { font-size: 14px; min-width: 0; }
 .next .what small { display: block; color: var(--muted); font-size: 12px; }
 .next .who { font-weight: 700; text-align: right; font-size: 14px; }
