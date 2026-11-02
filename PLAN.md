@@ -9,6 +9,7 @@ Firebase project ID: `wright-sb-squares-pool` → guest link `wright-sb-squares-
 - Two payment deadlines, both set by the organizer (payment window starts at 48 hours; final cutoff before kickoff).
 - Pay buttons: Venmo, Cash App, PayPal (amount + note prefilled); Zelle info shown to copy; cash marked paid by organizer. App never handles money.
 - Private organizer screen (Google sign-in): mark paid, remove/move squares, set price, prizes, team names, payment handles, deadlines; lock board; draw edge numbers after board is full; manual score backup.
+- (Removed at Stacey's request: "Find my squares")
 - Live ESPN score for everyone, ~30–60s behind TV.
 - Highlighting matches the Excel sheet: current winner, reverse winner, next FG/TD for each team.
 - Quarter winners + payouts automatic (1st Q, Half, 3rd Q, Final; OT counts toward Final).

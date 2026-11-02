@@ -47,8 +47,6 @@ const EXAMPLE = (() => {
 
 let pool = EXAMPLE;
 let selected = null;     // index of tapped square
-let myName = "";         // "Find my squares"
-try { myName = localStorage.getItem("myName") || ""; } catch (e) {}
 
 // ---------- helpers ----------
 const $ = (id) => document.getElementById(id);
@@ -132,7 +130,6 @@ function renderBoard() {
       const cls = ["cell"];
       if (!s) cls.push("open"); else if (s.status === "pending") cls.push("pending");
       if (kinds[0]) cls.push(kinds[0]);
-      if (myName && s && s.name === myName) cls.push("mine");
       if (selected === i * 10 + j) cls.push("selected");
       b.className = cls.join(" ");
       b.textContent = s ? s.initials : "+";
@@ -232,20 +229,6 @@ function renderPrizes() {
   }
 }
 
-function renderFind() {
-  const sel = $("findName");
-  const names = [...new Set(pool.squares.filter(Boolean).map((s) => s.name))].sort();
-  sel.innerHTML = "";
-  const none = document.createElement("option"); none.value = ""; none.textContent = "Choose your name…";
-  sel.appendChild(none);
-  for (const n of names) {
-    const o = document.createElement("option"); o.value = n; o.textContent = n;
-    if (n === myName) o.selected = true;
-    sel.appendChild(o);
-  }
-  const count = myName ? pool.squares.filter((s) => s && s.name === myName).length : 0;
-  $("findCount").textContent = myName ? `${count} square${count === 1 ? "" : "s"} outlined` : "";
-}
 
 // Color key under the board, with the initials of whoever holds each highlighted square.
 function renderKey() {
@@ -284,15 +267,9 @@ function render() {
   renderKey();
   renderNext();
   renderPrizes();
-  renderFind();
 }
 
 // ---------- events ----------
-$("findName").addEventListener("change", (e) => {
-  myName = e.target.value;
-  try { localStorage.setItem("myName", myName); } catch (err) {}
-  render();
-});
 
 // Preview-only: pretend scoring so the highlighting can be seen moving.
 document.querySelectorAll("[data-score]").forEach((btn) => {
