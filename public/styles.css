@@ -11,8 +11,10 @@
   --win: #ffff00;
   --win-ink: #15211a;
   --rev: #39ff14;
-  --next: #1a5cff;
-  --next-ink: #ffffff;
+  --rowTD: #1a5cff;   /* left-side team touchdown: bright blue */
+  --rowFG: #a21cff;   /* left-side team field goal: bright purple */
+  --colTD: #ff1f1f;   /* top team touchdown: bright red */
+  --colFG: #ff8a00;   /* top team field goal: bright orange */
   --pending: #fff2c4;
   --tint-base: #ffffff;
   --row: #004c54;
@@ -139,7 +141,10 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
   position: absolute; right: 1px; bottom: 1px; font-size: 7px; font-weight: 700; letter-spacing: 0.02em;
   line-height: 1; padding: 1px 2px; border-radius: 2px; background: var(--surface); color: var(--ink);
 }
-.cell.rowFG, .cell.rowTD, .cell.colFG, .cell.colTD { background: var(--next); color: var(--next-ink); border-color: var(--next); }
+.cell.rowTD { background: var(--rowTD); border-color: var(--rowTD); color: #fff; }
+.cell.rowFG { background: var(--rowFG); border-color: var(--rowFG); color: #fff; }
+.cell.colTD { background: var(--colTD); border-color: var(--colTD); color: #fff; }
+.cell.colFG { background: var(--colFG); border-color: var(--colFG); color: #15211a; }
 .cell.rev { background: var(--rev); color: #15211a; border-color: #15211a; }
 .cell.win { background: var(--win); color: var(--win-ink); border-color: var(--win-ink); box-shadow: 0 0 0 2px var(--win); z-index: 1; }
 .cell.mine { outline: 3px solid var(--ink); outline-offset: -3px; }
@@ -151,6 +156,8 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
 
 .key { display: flex; flex-wrap: wrap; gap: 6px 14px; margin: 10px 2px 0; font-size: 12px; color: var(--muted); }
 .key span { display: inline-flex; align-items: center; gap: 6px; }
+.key b { color: var(--ink); }
+.key .row-break { flex-basis: 100%; height: 0; }
 .detail { margin: 10px 2px 0; min-height: 22px; font-size: 14px; color: var(--muted); }
 .detail b { color: var(--ink); }
 
@@ -170,7 +177,8 @@ h2 {
 .next li:last-child { border-bottom: 0; }
 .sw { display: inline-block; flex: none; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); }
 .sw.win { background: var(--win); } .sw.rev { background: var(--rev); }
-.sw.rowFG, .sw.rowTD, .sw.colFG, .sw.colTD, .sw.next { background: var(--next); }
+.sw.rowTD { background: var(--rowTD); } .sw.rowFG { background: var(--rowFG); }
+.sw.colTD { background: var(--colTD); } .sw.colFG { background: var(--colFG); }
 .sw.pend { background: repeating-linear-gradient(135deg, var(--pending) 0 3px, var(--surface) 3px 6px); }
 .sw.open { background: var(--surface); }
 .next .what { font-size: 14px; min-width: 0; }

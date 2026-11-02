@@ -247,10 +247,42 @@ function renderFind() {
   $("findCount").textContent = myName ? `${count} square${count === 1 ? "" : "s"} outlined` : "";
 }
 
+// Color key under the board, with the initials of whoever holds each highlighted square.
+function renderKey() {
+  const key = $("key");
+  key.innerHTML = "";
+  const R = pool.rowTeam.name, C = pool.colTeam.name;
+  const hl = numbersShown() ? highlights(pool.rowNums, pool.colNums, pool.game.rowScore, pool.game.colScore) : [];
+  const at = Object.fromEntries(hl.map((h) => [h.kind, h]));
+  const items = [
+    ["win", "Winning now"], ["rev", "Reverse"],
+    ["rowTD", `${R} TD`], ["rowFG", `${R} FG`], ["colTD", `${C} TD`], ["colFG", `${C} FG`],
+  ];
+  for (const [kind, label] of items) {
+    const span = document.createElement("span");
+    const sw = document.createElement("i"); sw.className = "sw " + kind;
+    span.append(sw, label);
+    const h = at[kind];
+    if (h) {
+      const s = sq(h.i, h.j);
+      const b = document.createElement("b"); b.textContent = s ? s.initials : "open";
+      span.append(" → ", b);
+    }
+    key.appendChild(span);
+  }
+  const br = document.createElement("span"); br.className = "row-break"; key.appendChild(br);
+  for (const [cls, label] of [["pend", "Reserved, not paid"], ["open", "+ Open"]]) {
+    const span = document.createElement("span");
+    const sw = document.createElement("i"); sw.className = "sw " + cls;
+    span.append(sw, label); key.appendChild(span);
+  }
+}
+
 function render() {
   setTeamColors();
   renderScoreboard();
   renderBoard();
+  renderKey();
   renderNext();
   renderPrizes();
   renderFind();
