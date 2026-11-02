@@ -60,6 +60,10 @@ button:focus-visible, select:focus-visible { outline: 3px solid var(--turf); out
   letter-spacing: 0.02em; text-transform: uppercase; line-height: 1.05; text-wrap: balance;
 }
 .brand p { margin: 2px 0 0; color: var(--muted); font-size: 13px; letter-spacing: 0.06em; text-transform: uppercase; }
+.game-title {
+  margin: -4px 0 0; text-align: center; font-family: var(--font-display); font-weight: 700;
+  font-size: 24px; letter-spacing: 0.12em; text-transform: uppercase; line-height: 1.1;
+}
 .chip {
   display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 999px;
   font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
