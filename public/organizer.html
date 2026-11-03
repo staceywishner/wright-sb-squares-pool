@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Organizer · Wright SB Squares Pool</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;600;700&family=Saira+Condensed:wght@600;700&display=swap">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="organizer.css">
+</head>
+<body class="org">
+<main class="wrap">
+  <header class="top">
+    <div class="brand">
+      <h1>Organizer</h1>
+      <p class="sub">Wright SB Squares Pool</p>
+    </div>
+    <button type="button" class="btn ghost small" id="signOutBtn" hidden>Sign out</button>
+  </header>
+
+  <p class="notice" id="orgNotice" role="status" hidden></p>
+
+  <!-- Signed out -->
+  <section class="panel" id="signInPanel" hidden>
+    <h2>Sign in</h2>
+    <p>This page is only for the pool organizer. Sign in with your Google (Gmail) account.</p>
+    <button type="button" class="btn primary" id="signInBtn">Sign in with Google</button>
+  </section>
+
+  <!-- Wrong account -->
+  <section class="panel" id="wrongPanel" hidden>
+    <h2>Not the organizer account</h2>
+    <p>You're signed in as <b id="wrongEmail"></b>. Only the organizer's Gmail can open this page.</p>
+    <button type="button" class="btn" id="wrongSignOut">Sign out and try another account</button>
+  </section>
+
+  <!-- First-time setup -->
+  <section class="panel" id="setupPanel" hidden>
+    <h2>Set up this year's pool</h2>
+    <p>This creates the pool with last year's prizes and $25 squares. You can change any of it on the next screen.</p>
+    <button type="button" class="btn primary" id="createPoolBtn">Create the pool</button>
+  </section>
+
+  <div id="orgMain" hidden>
+    <nav class="jump" aria-label="Sections">
+      <a href="#sec-status">Status</a>
+      <a href="#sec-pay">Payments</a>
+      <a href="#sec-board">Board</a>
+      <a href="#sec-settings">Settings</a>
+      <a href="#sec-game">Game day</a>
+    </nav>
+
+    <!-- STATUS -->
+    <section class="panel" id="sec-status">
+      <h2>Status</h2>
+      <div class="statusline">
+        <span class="pill" id="stagePill">Closed</span>
+        <span id="stageText"></span>
+      </div>
+      <div class="stats">
+        <div><span class="n" id="statPaid">0</span><span class="l">Paid</span></div>
+        <div><span class="n" id="statPending">0</span><span class="l">Waiting on payment</span></div>
+        <div><span class="n" id="statOpen">100</span><span class="l">Open</span></div>
+        <div><span class="n" id="statMoney">$0</span><span class="l">Collected</span></div>
+      </div>
+      <div class="actions" id="stageActions"></div>
+      <div class="confirm" id="confirmBox" hidden>
+        <p id="confirmText"></p>
+        <div class="actions">
+          <button type="button" class="btn primary" id="confirmYes">Yes</button>
+          <button type="button" class="btn" id="confirmNo">Cancel</button>
+        </div>
+      </div>
+      <div class="linkbox">
+        <span class="l">Link to send guests</span>
+        <div class="copyrow">
+          <input id="guestLink" readonly value="https://wright-sb-squares-pool.web.app">
+          <button type="button" class="btn small" id="copyLink">Copy</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- PAYMENTS -->
+    <section class="panel" id="sec-pay">
+      <h2>Waiting on payment</h2>
+      <p class="hint" id="payHint"></p>
+      <ul class="paylist" id="payList"></ul>
+    </section>
+
+    <!-- BOARD -->
+    <section class="panel" id="sec-board">
+      <h2>Board</h2>
+      <p class="hint">Tap any square to add a name, mark it paid, move it, or remove it.</p>
+      <div class="board" id="orgBoard"></div>
+      <div class="editor" id="editor" hidden></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="sec-settings">
+      <h2>Settings</h2>
+      <form id="settingsForm" class="form" novalidate>
+        <fieldset>
+          <legend>Game</legend>
+          <label>Title <input id="f-title" maxlength="40"></label>
+        </fieldset>
+        <fieldset>
+          <legend>Team down the left side</legend>
+          <div class="row3">
+            <label>Name <input id="f-rowName" maxlength="20"></label>
+            <label>Short <input id="f-rowAbbr" maxlength="4"></label>
+            <label>Color <input id="f-rowColor" type="color"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Team across the top</legend>
+          <div class="row3">
+            <label>Name <input id="f-colName" maxlength="20"></label>
+            <label>Short <input id="f-colAbbr" maxlength="4"></label>
+            <label>Color <input id="f-colColor" type="color"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Squares</legend>
+          <div class="row2">
+            <label>Price per square ($) <input id="f-price" type="number" min="1" step="1" inputmode="numeric"></label>
+            <label>Most squares per guest <input id="f-max" type="number" min="1" max="100" step="1" inputmode="numeric"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Prizes ($)</legend>
+          <table class="prizetable">
+            <thead><tr><th></th><th>Winner</th><th>Reverse</th></tr></thead>
+            <tbody>
+              <tr><th>1st Quarter</th><td><input id="f-q1w" type="number" min="0" inputmode="numeric"></td><td><input id="f-q1r" type="number" min="0" inputmode="numeric"></td></tr>
+              <tr><th>Halftime</th><td><input id="f-halfw" type="number" min="0" inputmode="numeric"></td><td><input id="f-halfr" type="number" min="0" inputmode="numeric"></td></tr>
+              <tr><th>3rd Quarter</th><td><input id="f-q3w" type="number" min="0" inputmode="numeric"></td><td><input id="f-q3r" type="number" min="0" inputmode="numeric"></td></tr>
+              <tr><th>Final</th><td><input id="f-finalw" type="number" min="0" inputmode="numeric"></td><td><input id="f-finalr" type="number" min="0" inputmode="numeric"></td></tr>
+              <tr><th>If overtime: end of regulation</th><td><input id="f-otRegw" type="number" min="0" inputmode="numeric"></td><td><input id="f-otRegr" type="number" min="0" inputmode="numeric"></td></tr>
+              <tr><th>If overtime: final score</th><td><input id="f-otFinw" type="number" min="0" inputmode="numeric"></td><td><input id="f-otFinr" type="number" min="0" inputmode="numeric"></td></tr>
+            </tbody>
+          </table>
+          <p class="hint" id="potCheck"></p>
+        </fieldset>
+        <fieldset>
+          <legend>How guests pay you</legend>
+          <p class="hint">Fill in the ones you use. Leave the rest blank.</p>
+          <div class="row2">
+            <label>Venmo username <input id="f-venmo" placeholder="e.g. David-Wright-12" autocomplete="off"></label>
+            <label>Cash App $cashtag <input id="f-cashapp" placeholder="e.g. $DavidW" autocomplete="off"></label>
+            <label>PayPal.me name <input id="f-paypal" placeholder="e.g. davidwright" autocomplete="off"></label>
+            <label>Zelle phone or email <input id="f-zelle" autocomplete="off"></label>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Payment deadlines</legend>
+          <div class="row2">
+            <label>Hours to pay after reserving <input id="f-window" type="number" min="0" step="1" inputmode="numeric"><span class="hint">0 = no limit</span></label>
+            <label>Final cutoff (all unpaid squares released) <input id="f-cutoff" type="datetime-local"><span class="hint">Leave blank for none</span></label>
+          </div>
+        </fieldset>
+        <div class="actions">
+          <button type="submit" class="btn primary">Save settings</button>
+          <span class="saved" id="savedMsg" hidden>Saved</span>
+        </div>
+      </form>
+    </section>
+
+    <!-- GAME DAY -->
+    <section class="panel" id="sec-game">
+      <h2>Game day</h2>
+      <p class="hint">The live score will come from ESPN automatically (being added in a later step). Use this only if the score ever looks wrong or stops.</p>
+      <form id="scoreForm" class="form" novalidate>
+        <div class="row-score">
+          <label><span id="lblRowScore">Left team</span> <input id="s-row" type="number" min="0" inputmode="numeric"></label>
+          <label><span id="lblColScore">Top team</span> <input id="s-col" type="number" min="0" inputmode="numeric"></label>
+          <label>Quarter
+            <select id="s-period">
+              <option value="pre">Before kickoff</option>
+              <option value="1">1st Quarter</option>
+              <option value="2">2nd Quarter</option>
+              <option value="3">3rd Quarter</option>
+              <option value="4">4th Quarter</option>
+              <option value="5">Overtime</option>
+              <option value="post">Final</option>
+            </select>
+          </label>
+        </div>
+        <div class="actions"><button type="submit" class="btn primary">Update score</button><span class="saved" id="scoreSaved" hidden>Updated</span></div>
+      </form>
+      <h3>Quarter results</h3>
+      <p class="hint">At the end of each quarter, tap its button to lock in that score for the prizes.</p>
+      <ul class="qlist" id="qList"></ul>
+    </section>
+  </div>
+</main>
+<script src="firebase-config.js"></script>
+<script src="logic.js"></script>
+<script src="organizer-ui.js"></script>
+<script type="module" src="organizer-data.js"></script>
+</body>
+</html>
