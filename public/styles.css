@@ -108,7 +108,7 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 }
 .clock strong { display: grid; font-size: 20px; line-height: 1.05; color: var(--ink); }
 .clock strong span { display: block; }
-.clock #clock { margin-top: 4px; font-variant-numeric: tabular-nums; }
+.clock #clock { margin-top: 18px; font-variant-numeric: tabular-nums; }
 
 /* Board */
 .board-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }
