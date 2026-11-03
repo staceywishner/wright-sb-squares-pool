@@ -307,8 +307,11 @@ function renderKey() {
     span.append(box, label);
     key.appendChild(span);
   }
-  const br = document.createElement("span"); br.className = "row-break"; key.appendChild(br);
-  for (const [cls, label] of [["pend", "Reserved, not paid"], ["open", "Open"]]) {
+  // Only explain striped / open squares while there are some on the board.
+  const extras = [["pend", "Reserved, not paid"], ["open", "Open"]].filter(([cls]) =>
+    cls === "pend" ? pool.squares.some((s) => s && s.status === "pending") : pool.squares.some((s) => !s));
+  if (extras.length) { const br = document.createElement("span"); br.className = "row-break"; key.appendChild(br); }
+  for (const [cls, label] of extras) {
     const span = document.createElement("span");
     const box = document.createElement("i");
     box.className = "kbox cell " + (cls === "pend" ? "pending" : "open");
