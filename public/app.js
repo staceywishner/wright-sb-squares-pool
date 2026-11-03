@@ -346,7 +346,7 @@ function renderKey() {
   const hl = numbersShown() ? highlights(pool.rowNums, pool.colNums, pool.game.rowScore, pool.game.colScore) : [];
   const at = Object.fromEntries(hl.map((h) => [h.kind, h]));
   const items = [
-    ["win", "Winning now"], ["rev", "Reverse"],
+    ["win", "Winning now"], ["rev", "Reverse winner"],
     ["rowTD", `${R} TD`], ["rowFG", `${R} FG`], ["colTD", `${C} TD`], ["colFG", `${C} FG`],
   ];
   for (const [kind, label] of items) {
