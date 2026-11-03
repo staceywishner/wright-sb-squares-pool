@@ -278,6 +278,9 @@
       F(side + "NumInk").value = t.numInk || "#ffffff";
     }
     numPreview();
+    $("picPreview").hidden = !pool.centerImage;
+    if (pool.centerImage) $("picPreview").src = pool.centerImage;
+    $("picRemove").hidden = !pool.centerImage;
     F("price").value = pool.pricePerSquare; F("max").value = pool.maxPerGuest ?? 10;
     const byKey = Object.fromEntries((pool.prizes || []).map((p) => [p.key, p]));
     for (const [k] of PRIZE_KEYS) { F(k + "w").value = byKey[k]?.amount ?? 0; F(k + "r").value = byKey[k]?.reverse ?? 0; }
@@ -307,6 +310,39 @@
     }
   }
   $("settingsForm").addEventListener("input", () => { potCheck(); numPreview(); });
+
+  // Picture for the middle of the scoreboard: shrunk on this device, then saved with the pool settings.
+  function shrinkImage(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("Couldn't read that file."));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("That file isn't a picture this browser can open. Try a PNG or JPG."));
+        img.onload = () => {
+          const max = 320, scale = Math.min(1, max / Math.max(img.width, img.height));
+          const c = document.createElement("canvas");
+          c.width = Math.max(1, Math.round(img.width * scale)); c.height = Math.max(1, Math.round(img.height * scale));
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          let url = c.toDataURL("image/png");
+          if (url.length > 300000) url = c.toDataURL("image/jpeg", 0.85);
+          resolve(url);
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+  $("picFile").addEventListener("change", async (e) => {
+    const file = e.target.files && e.target.files[0];
+    e.target.value = "";
+    if (!file) return;
+    try {
+      const url = await shrinkImage(file);
+      await run(api().savePool({ centerImage: url }), "Picture saved. It now shows in the middle of the scoreboard.");
+    } catch (err) { notice(err.message); }
+  });
+  $("picRemove").addEventListener("click", () => run(api().savePool({ centerImage: null }), "Picture removed."));
   $("settingsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const cutoff = F("cutoff").value ? new Date(F("cutoff").value) : null;

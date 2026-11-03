@@ -138,6 +138,18 @@
           <div class="numpreview"><span id="pv-col">0</span><span id="pv-col2">7</span><span class="hint">Preview of the 0–9 boxes and team name strip</span></div>
         </fieldset>
         <fieldset>
+          <legend>Picture in the middle of the scoreboard</legend>
+          <p class="hint">For example the Super Bowl logo. Save a picture of it to your phone or computer first, then pick it here. It's saved right away.</p>
+          <div class="picrow">
+            <img id="picPreview" alt="" hidden>
+            <div class="actions">
+              <label class="btn small" for="picFile">Choose picture</label>
+              <input id="picFile" class="vh" type="file" accept="image/*">
+              <button type="button" class="btn small danger" id="picRemove" hidden>Remove picture</button>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
           <legend>Squares</legend>
           <div class="row2">
             <label>Price per square ($) <input id="f-price" type="number" min="1" step="1" inputmode="numeric"></label>

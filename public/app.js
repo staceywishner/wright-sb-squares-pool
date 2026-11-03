@@ -68,6 +68,7 @@ function normalize(p) {
     overtime: p.overtime || EXAMPLE.overtime,
     finished: p.finished || {},
     game: { rowScore: 0, colScore: 0, period: 1, clock: "", state: "pre", ...(p.game || {}) },
+    centerImage: p.centerImage || null,
   };
 }
 
@@ -132,6 +133,9 @@ function renderScoreboard() {
   setLogo($("colLogo"), pool.colTeam);
   $("rowScore").textContent = g.rowScore;
   $("colScore").textContent = g.colScore;
+  const ci = $("centerImg");
+  if (pool.centerImage) { if (ci.getAttribute("src") !== pool.centerImage) ci.src = pool.centerImage; ci.hidden = false; }
+  else { ci.hidden = true; ci.removeAttribute("src"); }
   // Stack the quarter on two lines ("3RD" over "QTR") so the middle box stays narrow.
   const label = g.state === "post" ? "Final" : g.state === "pre" ? "Kickoff" : periodName(g.period);
   const per = $("period");

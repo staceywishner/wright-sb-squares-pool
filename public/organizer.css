@@ -82,3 +82,7 @@ input[type="color"] { padding: 2px; height: 42px; }
 .row-score label:last-child { grid-column: 1 / -1; }
 .numpreview { display: flex; align-items: center; gap: 6px; }
 .numpreview span:not(.hint) { width: 30px; height: 30px; border-radius: 4px; display: grid; place-content: center; font-family: var(--font-display); font-weight: 700; font-size: 18px; border: 1px solid var(--line); }
+.picrow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.picrow img { width: 96px; height: 72px; object-fit: contain; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
+.picrow label.btn { display: inline-flex; font-weight: 700; }
+.vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
