@@ -110,7 +110,7 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 .clock strong { display: block; font-size: clamp(16px, 4.6vw, 22px); line-height: 1.1; color: var(--ink); white-space: nowrap; }
 .clock strong span + span::before { content: " "; }
 .clock #clock { margin-top: 14px; min-height: 1.2em; font-variant-numeric: tabular-nums; }
-.clock #centerImg { margin-top: auto; padding-top: 8px; width: 100%; max-height: 84px; object-fit: contain; }
+.clock #centerImg { margin-top: 10px; width: 100%; max-height: 96px; object-fit: contain; }
 
 /* Board */
 .board-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }
