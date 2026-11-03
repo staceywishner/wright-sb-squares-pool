@@ -410,7 +410,7 @@ function renderReserve() {
   const form = document.createElement("form"); form.className = "form"; form.noValidate = true;
   form.innerHTML = `
     <div class="row2">
-      <label>Your full name <input id="r-name" maxlength="40" autocomplete="name"></label>
+      <label>Your full name (including middle initial) <input id="r-name" maxlength="40" autocomplete="name"></label>
       <label>Initials for the square <input id="r-init" maxlength="4" autocomplete="off" style="text-transform:uppercase"></label>
     </div>
     <div class="actions">
