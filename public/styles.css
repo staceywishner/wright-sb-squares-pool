@@ -117,12 +117,12 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
   gap: 2px;
 }
 .band-top {
-  grid-column: 3 / -1; grid-row: 1; background: var(--col); color: #fff; border-radius: 6px 6px 0 0;
+  grid-column: 3 / -1; grid-row: 1; background: var(--col-num-bg, var(--col)); color: var(--col-num-ink, #fff); border-radius: 6px 6px 0 0;
   text-align: center; font-family: var(--font-display); font-weight: 700; letter-spacing: 0.14em;
   text-transform: uppercase; font-size: 14px; padding: 3px 4px;
 }
 .band-left {
-  grid-column: 1; grid-row: 3 / -1; background: var(--row); color: #fff; border-radius: 6px 0 0 6px;
+  grid-column: 1; grid-row: 3 / -1; background: var(--row-num-bg, var(--row)); color: var(--row-num-ink, #fff); border-radius: 6px 0 0 6px;
   writing-mode: vertical-rl; transform: rotate(180deg); text-align: center;
   font-family: var(--font-display); font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; font-size: 14px;
   display: grid; place-content: center;
