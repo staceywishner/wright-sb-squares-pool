@@ -132,7 +132,7 @@ function renderScoreboard() {
   $("rowScore").textContent = g.rowScore;
   $("colScore").textContent = g.colScore;
   $("period").textContent = g.state === "post" ? "Final" : g.state === "pre" ? "Kickoff" : periodName(g.period);
-  $("clock").textContent = g.state === "in" ? g.clock : "";
+  $("clock").textContent = g.state === "in" ? (g.detail && /half/i.test(g.detail) ? "Halftime" : g.clock) : "";
 }
 
 function renderBoard() {

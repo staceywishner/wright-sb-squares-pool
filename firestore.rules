@@ -13,7 +13,7 @@ service cloud.firestore {
 
     function isOrganizer() {
       return signedIn()
-        && request.auth.token.email == 'david.wright333@gmail.com'
+        && request.auth.token.email in ['david.wright333@gmail.com', 'stacey.wishner@gmail.com']
         && request.auth.token.email_verified == true;
     }
 

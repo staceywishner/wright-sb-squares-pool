@@ -9,7 +9,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Must match the organizer email in firestore.rules.
-const ORGANIZERS = ["david.wright333@gmail.com"];
+const ORGANIZERS = ["david.wright333@gmail.com", "stacey.wishner@gmail.com"];
 
 const app = initializeApp(window.FIREBASE_CONFIG);
 const auth = getAuth(app);
@@ -77,6 +77,7 @@ window.OrgAPI = {
   signOut() { return signOut(auth); },
   createPool() { return setDoc(poolRef, DEFAULT_POOL()); },
   savePool(data) { return updateDoc(poolRef, data); },
+  useLiveScore() { return updateDoc(poolRef, { "game.manual": false }); },
 
   markPaid(indices) {
     const b = writeBatch(db);

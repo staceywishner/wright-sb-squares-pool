@@ -319,6 +319,8 @@
     $("lblColScore").textContent = pool.colTeam.name;
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest("#scoreForm")) return;
     const g = pool.game || {};
+    $("liveBtn").hidden = !g.manual;
+    $("scoreMode").textContent = g.manual ? "Using the score you typed in. Guests see this score until you go back to the live ESPN score." : "Using the live ESPN score.";
     $("s-row").value = g.rowScore ?? 0; $("s-col").value = g.colScore ?? 0;
     $("s-period").value = g.state === "post" ? "post" : g.state === "in" ? String(Math.min(g.period || 1, 5)) : "pre";
   }
@@ -335,6 +337,8 @@
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
     if (await run(api().savePool({ game }))) { notice(""); flash("scoreSaved"); }
   });
+
+  $("liveBtn").addEventListener("click", () => run(api().useLiveScore(), "Back to the live ESPN score."));
 
   function renderQuarters() {
     const list = $("qList");

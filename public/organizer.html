@@ -172,7 +172,7 @@
     <!-- GAME DAY -->
     <section class="panel" id="sec-game">
       <h2>Game day</h2>
-      <p class="hint">The live score will come from ESPN automatically (being added in a later step). Use this only if the score ever looks wrong or stops.</p>
+      <p class="hint">The score comes from ESPN automatically when the team names here match the real game. Type a score below only if the live score ever looks wrong or stops.</p>
       <form id="scoreForm" class="form" novalidate>
         <div class="row-score">
           <label><span id="lblRowScore">Left team</span> <input id="s-row" type="number" min="0" inputmode="numeric"></label>
@@ -189,7 +189,8 @@
             </select>
           </label>
         </div>
-        <div class="actions"><button type="submit" class="btn primary">Update score</button><span class="saved" id="scoreSaved" hidden>Updated</span></div>
+        <div class="actions"><button type="submit" class="btn primary">Update score</button><button type="button" class="btn" id="liveBtn" hidden>Go back to the live ESPN score</button><span class="saved" id="scoreSaved" hidden>Updated</span></div>
+        <p class="hint" id="scoreMode"></p>
       </form>
       <h3>Quarter results</h3>
       <p class="hint">At the end of each quarter, tap its button to lock in that score for the prizes.</p>
