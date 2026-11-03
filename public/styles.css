@@ -216,6 +216,9 @@ h2 {
   font-family: var(--font-display); font-weight: 700; font-size: 17px; text-transform: uppercase; letter-spacing: 0.06em;
 }
 .prize .p-status { font-family: var(--font-body); font-weight: 400; font-size: 12px; text-transform: none; letter-spacing: 0; color: var(--muted); }
+.prize .p-status.scores { display: grid; gap: 1px; font-size: 13px; text-align: right; }
+.prize .p-status.scores > span { display: flex; justify-content: flex-end; gap: 8px; }
+.prize .p-status.scores b { color: var(--ink); min-width: 1.6em; font-variant-numeric: tabular-nums; }
 .pbox { border-radius: 6px; padding: 8px 10px; display: grid; gap: 2px; min-width: 0; }
 .pbox.win { background: color-mix(in srgb, var(--win) 35%, var(--surface)); border: 1px solid color-mix(in srgb, var(--win) 80%, var(--ink)); }
 .pbox.rev { background: color-mix(in srgb, var(--rev) 25%, var(--surface)); border: 1px solid color-mix(in srgb, var(--rev) 80%, var(--ink)); }

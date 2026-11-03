@@ -301,7 +301,14 @@ function renderPrizes() {
       const pw = periodWinners(pool.rowNums, pool.colNums, done[0], done[1]);
       winName = pw.win ? who(sq(pw.win.i, pw.win.j)) : "—";
       revName = pw.rev ? who(sq(pw.rev.i, pw.rev.j)) : "Same square as winner";
-      status.textContent = `${pool.rowTeam.name} ${done[0]} – ${pool.colTeam.name} ${done[1]}`;
+      // One team per line: "Chicago Bears 7" over "Seattle Seahawks 3"
+      status.classList.add("scores");
+      [[pool.rowTeam.name, done[0]], [pool.colTeam.name, done[1]]].forEach(([team, pts]) => {
+        const line = document.createElement("span");
+        const nm = document.createElement("span"); nm.textContent = team;
+        const sc = document.createElement("b"); sc.textContent = pts;
+        line.append(nm, sc); status.appendChild(line);
+      });
     } else {
       status.textContent = p.key === liveKey ? "In progress" : "Not played yet";
     }
