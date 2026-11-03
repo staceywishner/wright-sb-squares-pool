@@ -29,5 +29,5 @@ Firebase: Firestore (nam5), Auth: Anonymous + Google enabled. Free Spark plan.
    - 3d. Guests reserve squares + pay buttons
    - 3e. Organizer screen
    - 3f. Party chat
-4. Link GitHub → Firebase so it deploys automatically
+4. Link GitHub → Firebase so it deploys automatically — workflow added (.github/workflows/deploy.yml)
 5. Test on phone and on regular NFL Sundays
