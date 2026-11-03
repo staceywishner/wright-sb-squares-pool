@@ -23,11 +23,11 @@ Firebase: Firestore (nam5), Auth: Anonymous + Google enabled. Free Spark plan.
 1. Firebase project — done
 2. GitHub repo connected — done
 3. Build the app
-   - 3a. Guest board (example data) — done, awaiting approval
-   - 3b. Shared online board (Firebase) — code + security rules written; rules to be published
+   - 3a. Guest board — done, approved
+   - 3b. Shared online board (Firebase) — done; rules published
    - 3c. Live ESPN score
    - 3d. Guests reserve squares + pay buttons
    - 3e. Organizer screen
    - 3f. Party chat
-4. Link GitHub → Firebase so it deploys automatically — workflow added (.github/workflows/deploy.yml)
+4. Link GitHub → Firebase so it deploys automatically — done; live at wright-sb-squares-pool.web.app (deploy key roles: Firebase Admin + Service Usage Consumer added)
 5. Test on phone and on regular NFL Sundays
