@@ -83,13 +83,13 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 
 /* Scoreboard */
 .scoreboard {
-  display: grid; grid-template-columns: 1fr auto 1fr; align-items: stretch;
+  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
 }
 .team { padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
 .team .name {
-  font-family: var(--font-display); font-weight: 700; font-size: clamp(13px, 3.6vw, 16px); text-transform: uppercase;
-  letter-spacing: 0.03em; line-height: 1.15; overflow-wrap: normal; word-break: normal; hyphens: none;
+  font-family: var(--font-display); font-weight: 700; font-size: clamp(15px, 4.4vw, 20px); text-transform: uppercase;
+  letter-spacing: 0.02em; line-height: 1.15; overflow-wrap: normal; word-break: normal; hyphens: none;
 }
 .team .logo {
   width: 40px; height: 40px; border-radius: 50%; display: grid; place-content: center; overflow: hidden;
@@ -103,10 +103,12 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 .team.row { border-top: 6px solid var(--row); }
 .team.col { border-top: 6px solid var(--col); text-align: right; }
 .clock {
-  display: grid; place-content: center; text-align: center; padding: 8px 6px; border-inline: 1px solid var(--line);
+  display: grid; place-content: center; text-align: center; padding: 8px 8px; border-inline: 1px solid var(--line); max-width: 96px;
   font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 14px; color: var(--muted);
 }
-.clock strong { display: block; font-size: 20px; color: var(--ink); }
+.clock strong { display: grid; font-size: 20px; line-height: 1.05; color: var(--ink); }
+.clock strong span { display: block; }
+.clock #clock { margin-top: 4px; font-variant-numeric: tabular-nums; }
 
 /* Board */
 .board-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 10px; }

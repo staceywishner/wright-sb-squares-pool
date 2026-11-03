@@ -132,7 +132,11 @@ function renderScoreboard() {
   setLogo($("colLogo"), pool.colTeam);
   $("rowScore").textContent = g.rowScore;
   $("colScore").textContent = g.colScore;
-  $("period").textContent = g.state === "post" ? "Final" : g.state === "pre" ? "Kickoff" : periodName(g.period);
+  // Stack the quarter on two lines ("3RD" over "QTR") so the middle box stays narrow.
+  const label = g.state === "post" ? "Final" : g.state === "pre" ? "Kickoff" : periodName(g.period);
+  const per = $("period");
+  per.innerHTML = "";
+  label.split(" ").forEach((w) => { const s = document.createElement("span"); s.textContent = w; per.appendChild(s); });
   $("clock").textContent = g.state === "in" ? (g.detail && /half/i.test(g.detail) ? "Halftime" : g.clock) : "";
 }
 
