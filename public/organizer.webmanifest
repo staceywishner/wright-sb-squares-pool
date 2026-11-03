@@ -2,7 +2,7 @@
   "name": "Squares Pool Organizer",
   "short_name": "Organizer",
   "start_url": "/organizer",
-  "scope": "/",
+  "scope": "/organizer",
   "display": "standalone",
   "background_color": "#f4f6f2",
   "theme_color": "#15211a",
@@ -23,5 +23,6 @@
       "type": "image/png",
       "purpose": "maskable"
     }
-  ]
+  ],
+  "id": "/organizer?app=organizer"
 }
