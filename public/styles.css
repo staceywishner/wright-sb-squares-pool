@@ -143,6 +143,9 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
   color: var(--ink); overflow: hidden;
 }
 .cell.open { color: var(--muted); font-weight: 400; }
+/* Three-letter initials: a little smaller and tighter so wide letters (W, M) still fit. */
+.cell.long { font-size: clamp(9px, 2.45vw, 12px); letter-spacing: -0.08em; }
+.key .kbox.long { font-size: 10px; }
 .cell.pending { background: repeating-linear-gradient(135deg, var(--pending) 0 5px, var(--surface) 5px 10px); }
 /* (unused) */ .cell .tag {
   position: absolute; right: 1px; bottom: 1px; font-size: 7px; font-weight: 700; letter-spacing: 0.02em;

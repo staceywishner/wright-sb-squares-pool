@@ -177,6 +177,7 @@ function renderBoard() {
       if (selected === i * 10 + j) cls.push("selected");
       b.className = cls.join(" ");
       b.textContent = s ? s.initials : "+";
+      if (s && s.initials.length >= 3) b.classList.add("long");
       const rowD = showNums ? pool.rowNums[i] : "?", colD = showNums ? pool.colNums[j] : "?";
       b.setAttribute("aria-label", `${pool.rowTeam.name} ${rowD}, ${pool.colTeam.name} ${colD}: ${who(s)}${s && s.status === "pending" ? ", pending payment" : ""}`);
       b.addEventListener("click", () => { selected = selected === i * 10 + j ? null : i * 10 + j; render(); });
@@ -305,6 +306,7 @@ function renderKey() {
     const h = at[kind];
     const s = h ? sq(h.i, h.j) : null;
     box.textContent = h ? (s ? s.initials : "+") : "";
+    if (s && s.initials.length >= 3) box.classList.add("long");
     span.append(box, label);
     key.appendChild(span);
   }

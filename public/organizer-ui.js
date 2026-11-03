@@ -180,6 +180,7 @@
         b.className = "cell" + (!s ? " open" : s.status === "pending" ? " pending" : "") + (selected === k ? " selected" : "") +
           (editorMode === "move" && !s ? " target" : "");
         b.textContent = s ? s.initials : "+";
+        if (s && s.initials.length >= 3) b.classList.add("long");
         b.setAttribute("aria-label", `Square ${k + 1}: ${s ? s.name + (s.status === "pending" ? ", not paid" : ", paid") : "open"}`);
         b.addEventListener("click", () => onCellTap(k));
         add(b, j + 3, i + 3);
