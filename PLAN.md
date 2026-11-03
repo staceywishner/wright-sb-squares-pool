@@ -25,9 +25,9 @@ Firebase: Firestore (nam5), Auth: Anonymous + Google enabled. Free Spark plan.
 3. Build the app
    - 3a. Guest board — done, approved
    - 3b. Shared online board (Firebase) — done; rules published
-   - 3c. Live ESPN score
-   - 3d. Guests reserve squares + pay buttons
-   - 3e. Organizer screen
+   - 3c. Live ESPN score — done (tested Bears vs Seahawks, Nov 2)
+   - 3d. Guests reserve squares + pay buttons — done (one square at a time, name remembered, 10 max)
+   - 3e. Organizer screen — done (incl. Start over, number-box colors, middle picture)
    - 3f. Party chat
 4. Link GitHub → Firebase so it deploys automatically — done; live at wright-sb-squares-pool.web.app (deploy key roles: Firebase Admin + Service Usage Consumer added)
 5. Test on phone and on regular NFL Sundays

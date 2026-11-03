@@ -2,7 +2,8 @@
 // Everyone can read the board; only the organizer (and guests reserving their own
 // squares) can change it — see firestore.rules.
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, doc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, doc, collection, onSnapshot, getDoc, writeBatch, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 const params = new URLSearchParams(location.search);
 
@@ -100,6 +101,31 @@ if (!params.has("example")) {
     push();
     if (poolDoc && firstPoll) { firstPoll = false; pollEspn(); }
   }, failed);
+
+  // ---------- guests reserving squares ----------
+  // Each phone gets a private anonymous pass (no sign-up) the first time it reserves,
+  // so the app knows which squares are "yours" and can enforce the per-guest limit.
+  const auth = getAuth(app);
+  onAuthStateChanged(auth, (u) => ui.setMe(u ? u.uid : null));
+  async function ensureSignedIn() {
+    if (auth.currentUser) return auth.currentUser;
+    const cred = await signInAnonymously(auth);
+    return cred.user;
+  }
+  window.SquaresData = {
+    async reserve(k, name, initials) {
+      const user = await ensureSignedIn();
+      ui.setMe(user.uid);
+      const gref = doc(db, "guests", user.uid);
+      const g = await getDoc(gref);
+      const list = g.exists() ? (g.data().squares || []) : [];
+      const b = writeBatch(db);
+      b.set(doc(db, "squares", String(k)), { name, initials, status: "pending", ownerUid: user.uid, reservedAt: serverTimestamp() });
+      if (g.exists()) b.update(gref, { squares: [...list, String(k)] });
+      else b.set(gref, { squares: [String(k)] });
+      await b.commit();
+    },
+  };
 
   onSnapshot(collection(db, "squares"), (qs) => {
     const next = new Array(100).fill(null);

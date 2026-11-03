@@ -87,6 +87,8 @@
     if (st === "open") {
       btn("Close sign-ups", "", () => run(api().savePool({ locked: true }), "Sign-ups are closed."));
     }
+    const startOver = () => askConfirm("Start over? This erases ALL names on the board, the drawn numbers, the score and the quarter results. Your settings (teams, prices, prizes, payment info) stay. This can't be undone.",
+      () => run(api().startOver(), "Cleared. The board is empty and closed. Open it for sign-ups when you're ready."));
     if (st !== "drawn") {
       btn("Lock board & draw numbers", st === "full" || (st === "open" && c.open === 0) ? "primary" : "", () => {
         if (c.open > 0) return askConfirm(`${c.open} square${c.open === 1 ? " is" : "s are"} still open. Draw the numbers anyway? Open squares will stay empty and nobody can pick them after this.`, drawNumbers);
@@ -96,6 +98,7 @@
     } else {
       btn("Clear the numbers", "", () => askConfirm("Clear the drawn numbers? You'd draw them again afterwards. Only do this if something went wrong.", () => run(api().savePool({ rowNums: null, colNums: null }), "Numbers cleared.")));
     }
+    btn("Start over (erase all names)", "danger", startOver);
   }
 
   function shuffled() {

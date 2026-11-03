@@ -51,6 +51,13 @@ const $ = (id) => document.getElementById(id);
 let pool = EXAMPLE;
 let selected = null;     // index of tapped square
 let live = false;        // true once the shared board has loaded
+let myUid = null;        // this phone's private pass (set after its first reservation)
+let reserving = null;    // index of the open square this guest is about to reserve
+let busy = false;
+const store = {
+  get(k) { try { return localStorage.getItem(k) || ""; } catch (e) { return ""; } },
+  set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} },
+};
 
 // Fill in anything the saved board doesn't have yet, so the page never breaks.
 function normalize(p) {
@@ -69,6 +76,11 @@ function normalize(p) {
     finished: p.finished || {},
     game: { rowScore: 0, colScore: 0, period: 1, clock: "", state: "pre", ...(p.game || {}) },
     centerImage: p.centerImage || null,
+    locked: p.locked !== false,
+    maxPerGuest: p.maxPerGuest || 10,
+    payment: p.payment || {},
+    paymentWindowHours: p.paymentWindowHours ?? 48,
+    finalCutoff: p.finalCutoff || null,
   };
 }
 
@@ -92,6 +104,7 @@ window.SquaresApp = {
     render();
   },
   showNotice,
+  setMe(uid) { if (uid !== myUid) { myUid = uid; if (live) render(); } },
 };
 
 // ---------- helpers ----------
@@ -189,7 +202,13 @@ function renderBoard() {
       if (s && s.initials.length >= 3) b.classList.add("long");
       const rowD = showNums ? pool.rowNums[i] : "?", colD = showNums ? pool.colNums[j] : "?";
       b.setAttribute("aria-label", `${pool.rowTeam.name} ${rowD}, ${pool.colTeam.name} ${colD}: ${who(s)}${s && s.status === "pending" ? ", pending payment" : ""}`);
-      b.addEventListener("click", () => { selected = selected === i * 10 + j ? null : i * 10 + j; render(); });
+      b.addEventListener("click", () => {
+        const k = i * 10 + j;
+        if (!s && signupsOpen()) { reserving = reserving === k ? null : k; selected = null; render(); scrollToPanel(); return; }
+        reserving = null;
+        selected = selected === k ? null : k; render();
+      });
+      if (reserving === i * 10 + j) b.classList.add("selected");
       add(b, j + 3, i + 3);
     }
   }
@@ -332,6 +351,143 @@ function renderKey() {
   }
 }
 
+// ---------- picking squares ----------
+const signupsOpen = () => live && !!window.SquaresData && pool.locked === false && !numbersShown();
+const mine = () => (myUid ? pool.squares.map((s, k) => [k, s]).filter(([, s]) => s && s.ownerUid === myUid) : []);
+function scrollToPanel() { setTimeout(() => { const el = $("reservePanel"); if (!el.hidden) el.scrollIntoView({ behavior: "smooth", block: "nearest" }); }, 30); }
+const initialsFrom = (name) => name.trim().split(/\s+/).map((w) => w[0] || "").join("").slice(0, 3).toUpperCase();
+const squareLabel = (k) => numbersShown()
+  ? `${pool.rowTeam.name} ${pool.rowNums[Math.floor(k / 10)]} / ${pool.colTeam.name} ${pool.colNums[k % 10]}`
+  : `Square ${k + 1}`;
+
+function renderOpenBanner() {
+  const open = signupsOpen();
+  const left = pool.squares.filter((s) => !s).length;
+  $("openBanner").hidden = !open;
+  if (open) $("openBannerText").textContent = `${left} square${left === 1 ? "" : "s"} still open. Tap any + square on the board to pick it.`;
+}
+
+function renderReserve() {
+  const panel = $("reservePanel");
+  if (reserving == null || !signupsOpen() || pool.squares[reserving]) { reserving = null; panel.hidden = true; panel.innerHTML = ""; return; }
+  panel.hidden = false;
+  if (panel.dataset.k === String(reserving) && panel.contains(document.activeElement)) return; // don't wipe what they're typing
+  panel.dataset.k = String(reserving);
+  const count = mine().length, max = pool.maxPerGuest;
+  panel.innerHTML = "";
+  const h = document.createElement("h2"); h.textContent = "Pick this square"; panel.appendChild(h);
+  const p = document.createElement("p"); p.className = "hint"; p.textContent = `${squareLabel(reserving)} · ${money(pool.pricePerSquare)}`; panel.appendChild(p);
+  if (count >= max) {
+    const m = document.createElement("p"); m.textContent = `You already have ${max} squares, the most allowed per person.`;
+    panel.appendChild(m);
+    const c = document.createElement("button"); c.type = "button"; c.className = "btn"; c.textContent = "OK";
+    c.addEventListener("click", () => { reserving = null; render(); });
+    panel.appendChild(c);
+    return;
+  }
+  const form = document.createElement("form"); form.className = "form"; form.noValidate = true;
+  form.innerHTML = `
+    <div class="row2">
+      <label>Your full name <input id="r-name" maxlength="40" autocomplete="name"></label>
+      <label>Initials for the square <input id="r-init" maxlength="4" autocomplete="off" style="text-transform:uppercase"></label>
+    </div>
+    <div class="actions">
+      <button type="submit" class="btn primary" id="r-go">Reserve this square</button>
+      <button type="button" class="btn" id="r-cancel">Cancel</button>
+    </div>
+    <p class="hint" id="r-msg"></p>`;
+  panel.appendChild(form);
+  const nameIn = form.querySelector("#r-name"), initIn = form.querySelector("#r-init");
+  nameIn.value = store.get("guestName"); initIn.value = store.get("guestInit");
+  let initTouched = !!initIn.value;
+  initIn.addEventListener("input", () => (initTouched = true));
+  nameIn.addEventListener("input", () => { if (!initTouched) initIn.value = initialsFrom(nameIn.value); });
+  form.querySelector("#r-cancel").addEventListener("click", () => { reserving = null; render(); });
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    if (busy) return;
+    const name = nameIn.value.trim().replace(/\s+/g, " ");
+    const initials = (initIn.value.trim() || initialsFrom(name)).toUpperCase().slice(0, 4);
+    const msg = form.querySelector("#r-msg");
+    if (!name) { msg.textContent = "Type your name first."; nameIn.focus(); return; }
+    store.set("guestName", name); store.set("guestInit", initials);
+    busy = true; form.querySelector("#r-go").textContent = "Reserving…";
+    const k = reserving;
+    try {
+      await window.SquaresData.reserve(k, name, initials);
+      reserving = null;
+      showToast(`Square reserved for ${name}. Pay below to lock it in.`);
+    } catch (err) {
+      console.error(err);
+      msg.textContent = pool.squares[k] ? "Someone just took that square. Pick another one." :
+        "That didn't go through. The square may have just been taken, or sign-ups may have closed. Refresh and try again.";
+    } finally {
+      busy = false;
+      const go = form.querySelector("#r-go"); if (go) go.textContent = "Reserve this square";
+      render();
+    }
+  });
+  setTimeout(() => (nameIn.value ? form.querySelector("#r-go") : nameIn).focus({ preventScroll: true }), 50);
+}
+
+function payLinks(amount, note) {
+  const pay = pool.payment || {}, links = [];
+  const amt = String(amount);
+  if (pay.venmo) links.push(["Venmo", `https://venmo.com/${encodeURIComponent(pay.venmo.replace(/^@/, ""))}?txn=pay&amount=${amt}&note=${encodeURIComponent(note)}`]);
+  if (pay.cashapp) links.push(["Cash App", `https://cash.app/$${encodeURIComponent(pay.cashapp.replace(/^\$/, ""))}/${amt}`]);
+  if (pay.paypal) links.push(["PayPal", `https://paypal.me/${encodeURIComponent(pay.paypal)}/${amt}USD`]);
+  return links;
+}
+
+function renderMine() {
+  const panel = $("myPanel");
+  const list = mine();
+  if (!list.length) { panel.hidden = true; return; }
+  panel.hidden = false;
+  const unpaid = list.filter(([, s]) => s.status === "pending");
+  const owed = unpaid.length * pool.pricePerSquare;
+  $("myCount").textContent = `${list.length} square${list.length === 1 ? "" : "s"} · ${list.length - unpaid.length} paid · ${unpaid.length} waiting on payment`;
+  const ul = $("myList"); ul.innerHTML = "";
+  list.forEach(([k, s]) => {
+    const li = document.createElement("li");
+    const b = document.createElement("b"); b.textContent = s.initials;
+    li.append(b, ` ${squareLabel(k)} · ${s.status === "paid" ? "Paid" : "Not paid yet"}`);
+    ul.appendChild(li);
+  });
+  const payBox = $("payBox");
+  payBox.hidden = owed === 0;
+  if (owed > 0) {
+    const name = list[0][1].name;
+    const note = `Super Bowl Squares - ${name} (${unpaid.length})`;
+    $("owed").textContent = `You owe ${money(owed)}`;
+    const win = pool.paymentWindowHours;
+    $("payHintText").textContent = (win > 0 ? `Please pay within ${win} hours, or your unpaid squares go back on the board. ` : "") +
+      "Your squares turn from striped to solid once the organizer marks you paid.";
+    const btns = $("payButtons"); btns.innerHTML = "";
+    payLinks(owed, note).forEach(([label, url]) => {
+      const a = document.createElement("a"); a.className = "btn primary"; a.href = url; a.target = "_blank"; a.rel = "noopener";
+      a.textContent = `Pay ${money(owed)} with ${label}`;
+      btns.appendChild(a);
+    });
+    const z = (pool.payment || {}).zelle;
+    $("zelleRow").hidden = !z;
+    if (z) $("zelleTo").textContent = z;
+    $("cashNote").hidden = false;
+  }
+}
+
+let toastTimer;
+function showToast(text) {
+  const t = $("toast"); t.textContent = text; t.hidden = false;
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => (t.hidden = true), 5000);
+}
+
+$("zelleCopy").addEventListener("click", () => {
+  const v = $("zelleTo").textContent, btn = $("zelleCopy");
+  const done = () => { btn.textContent = "Copied"; setTimeout(() => (btn.textContent = "Copy"), 2000); };
+  try { navigator.clipboard.writeText(v).then(done, () => {}); } catch (e) {}
+});
+
 function render() {
   setTeamColors();
   renderScoreboard();
@@ -339,6 +495,9 @@ function render() {
   renderKey();
   renderNext();
   renderPrizes();
+  renderOpenBanner();
+  renderReserve();
+  renderMine();
 }
 
 // ---------- events ----------

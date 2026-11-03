@@ -41,11 +41,30 @@
     </div>
   </section>
 
+  <p class="notice open-banner" id="openBanner" hidden><b>Sign-ups are open!</b> <span id="openBannerText"></span></p>
+
   <section class="board-card" aria-label="Pool board">
     <div class="board" id="board"></div>
     <div class="key" id="key" aria-label="Color key"></div>
     <p class="detail" id="detail" aria-live="polite"></p>
   </section>
+
+  <section class="panel reserve" id="reservePanel" aria-live="polite" hidden></section>
+
+  <section class="panel" id="myPanel" hidden>
+    <h2>Your squares</h2>
+    <p class="hint" id="myCount"></p>
+    <ul class="mylist" id="myList"></ul>
+    <div class="paybox" id="payBox" hidden>
+      <p class="owed" id="owed"></p>
+      <div class="actions" id="payButtons"></div>
+      <p class="zelle" id="zelleRow" hidden>Zelle: <b id="zelleTo"></b> <button type="button" class="btn small" id="zelleCopy">Copy</button></p>
+      <p class="hint" id="cashNote" hidden>Paying cash? Just hand it to the organizer.</p>
+      <p class="hint" id="payHintText"></p>
+    </div>
+  </section>
+
+  <p class="toast" id="toast" role="status" hidden></p>
 
   <section class="panel" aria-label="Who wins next">
     <h2>Winning now</h2>

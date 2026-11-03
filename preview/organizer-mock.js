@@ -22,6 +22,7 @@
   const ok = () => Promise.resolve();
   window.OrgAPI = {
     signIn: ok, signOut: ok, createPool: ok,
+    startOver() { squares = new Array(100).fill(null); pool = { ...pool, rowNums: null, colNums: null, locked: true, finished: {} }; push(); return ok(); },
     savePool(d) { pool = { ...pool, ...d }; push(); return ok(); },
     markPaid(ix) { ix.forEach((k) => (squares[k].status = "paid")); push(); return ok(); },
     markPending(ix) { ix.forEach((k) => { squares[k].status = "pending"; squares[k].reservedAt = new Date(); }); push(); return ok(); },
