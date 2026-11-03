@@ -295,3 +295,4 @@ h2 {
 .lines > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .lines b { font-variant-numeric: tabular-nums; }
 .next .what small.lines b { color: var(--ink); }
+.key b.keybold { color: var(--ink); font-weight: 700; }

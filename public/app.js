@@ -356,7 +356,8 @@ function renderKey() {
     const s = h ? sq(h.i, h.j) : null;
     box.textContent = h ? (s ? s.initials : "+") : "";
     if (s && s.initials.length >= 3) box.classList.add("long");
-    span.append(box, label);
+    if (kind === "win" || kind === "rev") { const bl = document.createElement("b"); bl.className = "keybold"; bl.textContent = label; span.append(box, bl); }
+    else span.append(box, label);
     key.appendChild(span);
   }
   // Only explain striped / open squares while there are some on the board.
