@@ -83,7 +83,7 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 
 /* Scoreboard */
 .scoreboard {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: stretch;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 1fr); align-items: stretch;
   background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden;
 }
 .team { padding: 12px 14px; display: grid; gap: 2px; min-width: 0; }
@@ -103,10 +103,10 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
 .team.row { border-top: 6px solid var(--row); }
 .team.col { border-top: 6px solid var(--col); text-align: right; }
 .clock {
-  display: grid; place-content: center; text-align: center; padding: 8px 8px; border-inline: 1px solid var(--line); max-width: 96px;
+  display: grid; place-content: center; text-align: center; padding: 8px 6px; border-inline: 1px solid var(--line);
   font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 14px; color: var(--muted);
 }
-.clock strong { display: grid; font-size: 20px; line-height: 1.05; color: var(--ink); }
+.clock strong { display: grid; font-size: clamp(20px, 6vw, 26px); line-height: 1.05; color: var(--ink); }
 .clock strong span { display: block; }
 .clock #clock { margin-top: 18px; font-variant-numeric: tabular-nums; }
 
