@@ -289,3 +289,9 @@ h2 {
   .board-card .band-left { border-radius: 0; }
   .board-card .key, .board-card .detail { padding-left: 12px; }
 }
+
+/* Scores listed one team per line */
+.lines { display: grid; gap: 1px; }
+.lines > span { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lines b { font-variant-numeric: tabular-nums; }
+.next .what small.lines b { color: var(--ink); }

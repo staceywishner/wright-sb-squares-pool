@@ -232,6 +232,19 @@ function renderBoard() {
   }
 }
 
+// One team per line: "Chicago Bears 37" over "Seattle Seahawks 17"
+function scoreLines(el, pairs) {
+  el.innerHTML = "";
+  el.classList.add("lines");
+  pairs.forEach(([team, pts]) => {
+    const line = document.createElement("span");
+    const nm = document.createElement("span"); nm.textContent = team;
+    const sc = document.createElement("b"); sc.textContent = pts;
+    line.append(nm, " ", sc);
+    el.appendChild(line);
+  });
+}
+
 function renderNext() {
   const box = $("nextList");
   box.innerHTML = "";
@@ -250,13 +263,13 @@ function renderNext() {
   $("nowWho").textContent = w ? who(sq(w.i, w.j)) : "—";
   const rv = byKind.rev;
   $("nowRev").textContent = rv ? who(sq(rv.i, rv.j)) : "Same square";
-  $("nowScore").textContent = `${R} ${g.rowScore} – ${C} ${g.colScore}`;
+  scoreLines($("nowScore"), [[R, g.rowScore], [C, g.colScore]]);
 
   const rows = [
-    ["rowFG", `${R} field goal`, `${R} ${g.rowScore + 3} – ${C} ${g.colScore}`],
-    ["rowTD", `${R} touchdown`, `${R} ${g.rowScore + 7} – ${C} ${g.colScore}`],
-    ["colFG", `${C} field goal`, `${R} ${g.rowScore} – ${C} ${g.colScore + 3}`],
-    ["colTD", `${C} touchdown`, `${R} ${g.rowScore} – ${C} ${g.colScore + 7}`],
+    ["rowFG", `${R} field goal`, [[R, g.rowScore + 3], [C, g.colScore]]],
+    ["rowTD", `${R} touchdown`, [[R, g.rowScore + 7], [C, g.colScore]]],
+    ["colFG", `${C} field goal`, [[R, g.rowScore], [C, g.colScore + 3]]],
+    ["colTD", `${C} touchdown`, [[R, g.rowScore], [C, g.colScore + 7]]],
   ];
   for (const [kind, label, sub] of rows) {
     const h = byKind[kind];
@@ -265,7 +278,7 @@ function renderNext() {
     const swatch = document.createElement("span"); swatch.className = "sw " + kind;
     const what = document.createElement("span"); what.className = "what";
     const lbl = document.createElement("span"); lbl.className = "lbl"; lbl.textContent = label; what.appendChild(lbl);
-    const small = document.createElement("small"); small.textContent = sub; what.appendChild(small);
+    const small = document.createElement("small"); scoreLines(small, sub); what.appendChild(small);
     const name = document.createElement("span"); name.className = "who"; name.textContent = who(sq(h.i, h.j));
     li.append(swatch, what, name);
     box.appendChild(li);
