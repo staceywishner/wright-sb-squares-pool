@@ -5,7 +5,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {
   getFirestore, doc, collection, onSnapshot, setDoc, updateDoc, getDoc, writeBatch,
-  serverTimestamp, arrayRemove, getDocs,
+  serverTimestamp, arrayRemove, getDocs, deleteDoc,
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 // Must match the organizer email in firestore.rules.
@@ -76,6 +76,17 @@ window.OrgAPI = {
   },
   signOut() { return signOut(auth); },
   createPool() { return setDoc(poolRef, DEFAULT_POOL()); },
+  // Wipe the whole pool: every square, every guest list, and the pool settings themselves.
+  async resetAll() {
+    const [sq, gs] = await Promise.all([getDocs(collection(db, "squares")), getDocs(collection(db, "guests"))]);
+    const refs = [...sq.docs.map((x) => x.ref), ...gs.docs.map((x) => x.ref)];
+    for (let i = 0; i < refs.length; i += 400) {
+      const b = writeBatch(db);
+      refs.slice(i, i + 400).forEach((r) => b.delete(r));
+      await b.commit();
+    }
+    await deleteDoc(poolRef);
+  },
   // Clear every name, the drawn numbers, the score and quarter results. Settings stay.
   async startOver() {
     const [sq, gs] = await Promise.all([getDocs(collection(db, "squares")), getDocs(collection(db, "guests"))]);

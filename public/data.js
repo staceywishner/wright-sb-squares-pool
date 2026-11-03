@@ -75,6 +75,7 @@ if (!params.has("example")) {
   const push = () => {
     if (poolDoc === undefined || !squaresLoaded) return;
     if (poolDoc === null) {
+      document.body.classList.add("waiting");   // hide any old board after a full reset
       ui.showNotice("The organizer hasn't set up this year's pool yet. Check back soon.");
       return;
     }

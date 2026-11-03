@@ -99,6 +99,8 @@
       btn("Clear the numbers", "", () => askConfirm("Clear the drawn numbers? You'd draw them again afterwards. Only do this if something went wrong.", () => run(api().savePool({ rowNums: null, colNums: null }), "Numbers cleared.")));
     }
     btn("Start over (erase all names)", "danger", startOver);
+    btn("Reset everything", "danger", () => askConfirm("Reset EVERYTHING back to blank? This erases all names, numbers, scores, team names, colors, the picture, prices, prizes and payment info. You'll start fresh with \"Create the pool.\" This can't be undone.",
+      () => run(api().resetAll(), "Everything was reset. Tap \"Create the pool\" to start fresh.")));
   }
 
   function shuffled() {
@@ -271,6 +273,10 @@
   // ---------- SETTINGS ----------
   const F = (id) => $("f-" + id);
   function fillSettings() {
+    // The picture controls always reflect what's saved, even while someone is typing elsewhere in Settings.
+    $("picPreview").hidden = !pool.centerImage;
+    if (pool.centerImage) $("picPreview").src = pool.centerImage; else $("picPreview").removeAttribute("src");
+    $("picRemove").hidden = !pool.centerImage;
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest("#settingsForm")) return; // don't overwrite while typing
     F("title").value = pool.title || "";
     F("rowName").value = pool.rowTeam.name; F("rowAbbr").value = pool.rowTeam.abbr || ""; F("rowColor").value = pool.rowTeam.color || "#004c54";
@@ -281,9 +287,6 @@
       F(side + "NumInk").value = t.numInk || "#ffffff";
     }
     numPreview();
-    $("picPreview").hidden = !pool.centerImage;
-    if (pool.centerImage) $("picPreview").src = pool.centerImage;
-    $("picRemove").hidden = !pool.centerImage;
     F("price").value = pool.pricePerSquare; F("max").value = pool.maxPerGuest ?? 10;
     const byKey = Object.fromEntries((pool.prizes || []).map((p) => [p.key, p]));
     for (const [k] of PRIZE_KEYS) { F(k + "w").value = byKey[k]?.amount ?? 0; F(k + "r").value = byKey[k]?.reverse ?? 0; }
@@ -339,13 +342,14 @@
   $("picFile").addEventListener("change", async (e) => {
     const file = e.target.files && e.target.files[0];
     e.target.value = "";
+    e.target.blur();
     if (!file) return;
     try {
       const url = await shrinkImage(file);
       await run(api().savePool({ centerImage: url }), "Picture saved. It now shows in the middle of the scoreboard.");
     } catch (err) { notice(err.message); }
   });
-  $("picRemove").addEventListener("click", () => run(api().savePool({ centerImage: null }), "Picture removed."));
+  $("picRemove").addEventListener("click", () => { $("picRemove").blur(); run(api().savePool({ centerImage: null }), "Picture removed."); });
   $("settingsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const cutoff = F("cutoff").value ? new Date(F("cutoff").value) : null;

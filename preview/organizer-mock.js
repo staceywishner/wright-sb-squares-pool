@@ -21,7 +21,7 @@
   const push = () => { window.OrgUI.setPool(JSON.parse(JSON.stringify(pool), (k, v) => (k === "finalCutoff" && v ? new Date(v) : v))); window.OrgUI.setSquares(squares.map((s) => s && { ...s })); };
   const ok = () => Promise.resolve();
   window.OrgAPI = {
-    signIn: ok, signOut: ok, createPool: ok,
+    signIn: ok, signOut: ok, createPool: ok, resetAll: ok,
     startOver() { squares = new Array(100).fill(null); pool = { ...pool, rowNums: null, colNums: null, locked: true, finished: {} }; push(); return ok(); },
     savePool(d) { pool = { ...pool, ...d }; push(); return ok(); },
     markPaid(ix) { ix.forEach((k) => (squares[k].status = "paid")); push(); return ok(); },
