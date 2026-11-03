@@ -398,7 +398,10 @@ function renderReserve() {
   const count = mine().length, max = pool.maxPerGuest;
   panel.innerHTML = "";
   const h = document.createElement("h2"); h.textContent = "Pick this square"; panel.appendChild(h);
-  const p = document.createElement("p"); p.className = "hint"; p.textContent = `${squareLabel(reserving)} · ${money(pool.pricePerSquare)}`; panel.appendChild(p);
+  const p = document.createElement("p"); p.className = "hint";
+  p.textContent = `${squareLabel(reserving)} · ${money(pool.pricePerSquare)}` +
+    (count ? ` · You have ${count} so far (${money(count * pool.pricePerSquare)})` : "");
+  panel.appendChild(p);
   if (count >= max) {
     const m = document.createElement("p"); m.textContent = `You already have ${max} squares, the most allowed per person.`;
     panel.appendChild(m);
@@ -438,7 +441,8 @@ function renderReserve() {
     try {
       await window.SquaresData.reserve(k, name, initials);
       reserving = null;
-      showToast(`Square reserved for ${name}. Pay below to lock it in.`);
+      const n = Math.max(1, mine().length);
+      showToast(`Reserved! You have ${n} square${n === 1 ? "" : "s"}. Tap another + to add more, or "Done picking" to pay.`);
     } catch (err) {
       console.error(err);
       msg.textContent = pool.squares[k] ? "Someone just took that square. Pick another one." :
@@ -460,6 +464,24 @@ function payLinks(amount, note) {
   if (pay.paypal) links.push(["PayPal", `https://paypal.me/${encodeURIComponent(pay.paypal)}/${amt}USD`]);
   return links;
 }
+
+function renderTally() {
+  const list = mine();
+  const unpaid = list.filter(([, s]) => s.status === "pending").length;
+  const owed = unpaid * pool.pricePerSquare;
+  const bar = $("tally");
+  bar.hidden = !list.length || !live;
+  document.body.classList.toggle("has-tally", !bar.hidden);
+  if (bar.hidden) return;
+  $("tallyCount").textContent = `You have ${list.length} square${list.length === 1 ? "" : "s"}`;
+  $("tallyOwed").textContent = owed > 0 ? ` · You owe ${money(owed)}` : " · All paid. Thank you!";
+  $("tallyBtn").hidden = owed === 0;
+  $("tallyBtn").textContent = `Done picking — pay ${money(owed)}`;
+}
+$("tallyBtn").addEventListener("click", () => {
+  reserving = null; render();
+  setTimeout(() => $("myPanel").scrollIntoView({ behavior: "smooth", block: "start" }), 30);
+});
 
 function renderMine() {
   const panel = $("myPanel");
@@ -520,6 +542,7 @@ function render() {
   renderOpenBanner();
   renderReserve();
   renderMine();
+  renderTally();
 }
 
 // ---------- events ----------
