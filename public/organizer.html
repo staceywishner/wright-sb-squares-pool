@@ -198,28 +198,35 @@
     <!-- GAME DAY -->
     <section class="panel" id="sec-game">
       <h2>Game day</h2>
-      <p class="hint">The score comes from ESPN automatically when the team names here match the real game. Type a score below only if the live score ever looks wrong or stops.</p>
-      <form id="scoreForm" class="form" novalidate>
-        <div class="row-score">
-          <label><span id="lblRowScore">Left team</span> <input id="s-row" type="number" min="0" inputmode="numeric"></label>
-          <label><span id="lblColScore">Top team</span> <input id="s-col" type="number" min="0" inputmode="numeric"></label>
-          <label>Quarter
-            <select id="s-period">
-              <option value="pre">Before kickoff</option>
-              <option value="1">1st Quarter</option>
-              <option value="2">2nd Quarter</option>
-              <option value="3">3rd Quarter</option>
-              <option value="4">4th Quarter</option>
-              <option value="5">Overtime</option>
-              <option value="post">Final</option>
-            </select>
-          </label>
-        </div>
-        <div class="actions"><button type="submit" class="btn primary">Update score</button><button type="button" class="btn" id="liveBtn" hidden>Go back to the live ESPN score</button><span class="saved" id="scoreSaved" hidden>Updated</span></div>
-        <p class="hint" id="scoreMode"></p>
-      </form>
+      <div class="scoresource" id="scoreSource">
+        <span class="pill" id="sourcePill">Live ESPN score: ON</span>
+        <span id="sourceText">The board follows the real game automatically. Nothing to do.</span>
+      </div>
+      <div class="actions"><button type="button" class="btn primary" id="liveBtn" hidden>Turn the live ESPN score back on</button></div>
+      <details class="manualbox" id="manualBox">
+        <summary>ESPN stopped working? Type the score yourself</summary>
+        <p class="hint">Only use this if the live score is wrong or stuck. The board will show what you type here until you turn the live ESPN score back on.</p>
+        <form id="scoreForm" class="form" novalidate>
+          <div class="row-score">
+            <label><span id="lblRowScore">Left team</span> <input id="s-row" type="number" min="0" inputmode="numeric"></label>
+            <label><span id="lblColScore">Top team</span> <input id="s-col" type="number" min="0" inputmode="numeric"></label>
+            <label>Quarter
+              <select id="s-period">
+                <option value="pre">Before kickoff</option>
+                <option value="1">1st Quarter</option>
+                <option value="2">2nd Quarter</option>
+                <option value="3">3rd Quarter</option>
+                <option value="4">4th Quarter</option>
+                <option value="5">Overtime</option>
+                <option value="post">Final</option>
+              </select>
+            </label>
+          </div>
+          <div class="actions"><button type="submit" class="btn">Use this score instead of ESPN</button><span class="saved" id="scoreSaved" hidden>Updated</span></div>
+        </form>
+      </details>
       <h3>Quarter results</h3>
-      <p class="hint">At the end of each quarter, tap its button to lock in that score for the prizes.</p>
+      <p class="hint">With the live ESPN score on, these fill in by themselves. Record buttons only appear while you're typing in the score yourself.</p>
       <ul class="qlist" id="qList"></ul>
     </section>
   </div>

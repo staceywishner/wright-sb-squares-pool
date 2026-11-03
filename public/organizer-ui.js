@@ -372,7 +372,11 @@
     if (document.activeElement && document.activeElement.closest && document.activeElement.closest("#scoreForm")) return;
     const g = pool.game || {};
     $("liveBtn").hidden = !g.manual;
-    $("scoreMode").textContent = g.manual ? "Using the score you typed in. Guests see this score until you go back to the live ESPN score." : "Using the live ESPN score.";
+    $("sourcePill").textContent = g.manual ? "Live ESPN score: OFF" : "Live ESPN score: ON";
+    $("sourcePill").className = "pill " + (g.manual ? "off" : "drawn");
+    $("sourceText").textContent = g.manual
+      ? `Guests are seeing the score you typed in (${g.rowScore ?? 0}–${g.colScore ?? 0}), not the live game.`
+      : "The board follows the real game automatically. Nothing to do.";
     $("s-row").value = g.rowScore ?? 0; $("s-col").value = g.colScore ?? 0;
     $("s-period").value = g.state === "post" ? "post" : g.state === "in" ? String(Math.min(g.period || 1, 5)) : "pre";
   }
@@ -387,10 +391,12 @@
       clock: "", manual: true,
     };
     document.activeElement && document.activeElement.blur && document.activeElement.blur();
-    if (await run(api().savePool({ game }))) { notice(""); flash("scoreSaved"); }
+    askConfirm(`Show ${game.rowScore}–${game.colScore} on the board instead of the live ESPN score? The board will stop following the real game until you turn the live score back on.`, async () => {
+      if (await run(api().savePool({ game }))) { notice(""); flash("scoreSaved"); $("manualBox").open = false; }
+    });
   });
 
-  $("liveBtn").addEventListener("click", () => run(api().useLiveScore(), "Back to the live ESPN score."));
+  $("liveBtn").addEventListener("click", () => run(api().useLiveScore(), "The live ESPN score is back on."));
 
   function renderQuarters() {
     const list = $("qList");
@@ -400,16 +406,23 @@
     for (const [key, label] of PRIZE_KEYS) {
       const li = document.createElement("li");
       const t = document.createElement("span");
-      t.textContent = fin[key] ? `${label}: ${pool.rowTeam.name} ${fin[key][0]} – ${pool.colTeam.name} ${fin[key][1]}` : `${label}: not recorded`;
-      const b = document.createElement("button"); b.type = "button"; b.className = "btn small";
+      t.textContent = fin[key] ? `${label}: typed in as ${pool.rowTeam.name} ${fin[key][0]} – ${pool.colTeam.name} ${fin[key][1]}` :
+        g.manual ? `${label}: not recorded` : `${label}: filled in automatically from ESPN`;
+      li.appendChild(t);
       if (fin[key]) {
+        const b = document.createElement("button"); b.type = "button"; b.className = "btn small";
         b.textContent = "Undo";
-        b.addEventListener("click", () => { const f = { ...fin }; delete f[key]; run(api().savePool({ finished: f })); });
-      } else {
+        b.addEventListener("click", () => askConfirm(`Remove the typed-in ${label} result? ESPN's result will be used instead.`,
+          () => { const f = { ...fin }; delete f[key]; return run(api().savePool({ finished: f })); }));
+        li.appendChild(b);
+      } else if (g.manual) {
+        // Only offered while using a typed-in score; with the live ESPN score these fill in by themselves.
+        const b = document.createElement("button"); b.type = "button"; b.className = "btn small";
         b.textContent = `Record ${g.rowScore ?? 0}–${g.colScore ?? 0}`;
-        b.addEventListener("click", () => run(api().savePool({ finished: { ...fin, [key]: [g.rowScore ?? 0, g.colScore ?? 0] } }), `${label} recorded.`));
+        b.addEventListener("click", () => askConfirm(`Record ${label} as ${pool.rowTeam.name} ${g.rowScore ?? 0} – ${pool.colTeam.name} ${g.colScore ?? 0}?`,
+          () => run(api().savePool({ finished: { ...fin, [key]: [g.rowScore ?? 0, g.colScore ?? 0] } }), `${label} recorded.`)));
+        li.appendChild(b);
       }
-      li.append(t, b);
       list.appendChild(li);
     }
   }

@@ -86,3 +86,8 @@ input[type="color"] { padding: 2px; height: 42px; }
 .picrow img { width: 96px; height: 72px; object-fit: contain; border: 1px solid var(--line); border-radius: 6px; background: var(--surface); }
 .picrow label.btn { display: inline-flex; font-weight: 700; }
 .vh { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; pointer-events: none; }
+.scoresource { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; font-size: 14px; }
+.pill.off { background: #d7141a; color: #fff; }
+.manualbox { margin: 12px 0 4px; border: 1px dashed var(--line); border-radius: 8px; padding: 10px 12px; }
+.manualbox summary { cursor: pointer; font-weight: 600; font-size: 14px; color: var(--muted); }
+.manualbox[open] summary { margin-bottom: 8px; color: var(--ink); }
