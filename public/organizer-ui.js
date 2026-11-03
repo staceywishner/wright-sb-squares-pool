@@ -272,6 +272,12 @@
     F("title").value = pool.title || "";
     F("rowName").value = pool.rowTeam.name; F("rowAbbr").value = pool.rowTeam.abbr || ""; F("rowColor").value = pool.rowTeam.color || "#004c54";
     F("colName").value = pool.colTeam.name; F("colAbbr").value = pool.colTeam.abbr || ""; F("colColor").value = pool.colTeam.color || "#e31837";
+    for (const side of ["row", "col"]) {
+      const t = pool[side + "Team"];
+      F(side + "NumBg").value = t.numBg || t.color || "#555555";
+      F(side + "NumInk").value = t.numInk || "#ffffff";
+    }
+    numPreview();
     F("price").value = pool.pricePerSquare; F("max").value = pool.maxPerGuest ?? 10;
     const byKey = Object.fromEntries((pool.prizes || []).map((p) => [p.key, p]));
     for (const [k] of PRIZE_KEYS) { F(k + "w").value = byKey[k]?.amount ?? 0; F(k + "r").value = byKey[k]?.reverse ?? 0; }
@@ -294,14 +300,20 @@
       : `Prizes add up to ${money(prizes)}, but 100 squares × ${money(num("price"))} = ${money(pot)}. Double-check the amounts.`;
     $("potCheck").classList.toggle("warn", prizes !== pot);
   }
-  $("settingsForm").addEventListener("input", potCheck);
+  function numPreview() {
+    for (const side of ["row", "col"]) for (const id of ["pv-" + side, "pv-" + side + "2"]) {
+      $(id).style.background = F(side + "NumBg").value;
+      $(id).style.color = F(side + "NumInk").value;
+    }
+  }
+  $("settingsForm").addEventListener("input", () => { potCheck(); numPreview(); });
   $("settingsForm").addEventListener("submit", async (e) => {
     e.preventDefault();
     const cutoff = F("cutoff").value ? new Date(F("cutoff").value) : null;
     const data = {
       title: F("title").value.trim() || "Super Bowl",
-      rowTeam: { ...pool.rowTeam, name: F("rowName").value.trim() || "Team 1", abbr: F("rowAbbr").value.trim().toUpperCase(), color: F("rowColor").value },
-      colTeam: { ...pool.colTeam, name: F("colName").value.trim() || "Team 2", abbr: F("colAbbr").value.trim().toUpperCase(), color: F("colColor").value },
+      rowTeam: { ...pool.rowTeam, name: F("rowName").value.trim() || "Team 1", abbr: F("rowAbbr").value.trim().toUpperCase(), color: F("rowColor").value, numBg: F("rowNumBg").value, numInk: F("rowNumInk").value },
+      colTeam: { ...pool.colTeam, name: F("colName").value.trim() || "Team 2", abbr: F("colAbbr").value.trim().toUpperCase(), color: F("colColor").value, numBg: F("colNumBg").value, numInk: F("colNumInk").value },
       pricePerSquare: num("price") || 1,
       maxPerGuest: Math.min(100, num("max") || 10),
       prizes: PRIZE_KEYS.map(([key, label]) => ({ key, label, amount: num(key + "w"), reverse: num(key + "r") })),
@@ -368,6 +380,7 @@
     if (!pool) return;
     document.documentElement.style.setProperty("--row", pool.rowTeam.color);
     document.documentElement.style.setProperty("--col", pool.colTeam.color);
+    window.PoolLogic.applyNumColors(pool);
     renderStatus();
     renderPayments();
     renderBoard();

@@ -39,6 +39,16 @@
     return { win: cellFor(rowNums, colNums, r, c), rev: r === c ? null : cellFor(rowNums, colNums, c, r) };
   }
 
-  const api = { digit, cellFor, highlights, periodWinners, PRIORITY };
+  // Colors for the 0-9 number boxes on each edge (organizer can set background and number color).
+  function applyNumColors(pool) {
+    if (typeof document === "undefined") return;
+    const s = document.documentElement.style;
+    s.setProperty("--row-num-bg", (pool.rowTeam && (pool.rowTeam.numBg || pool.rowTeam.color)) || "#555555");
+    s.setProperty("--row-num-ink", (pool.rowTeam && pool.rowTeam.numInk) || "#ffffff");
+    s.setProperty("--col-num-bg", (pool.colTeam && (pool.colTeam.numBg || pool.colTeam.color)) || "#555555");
+    s.setProperty("--col-num-ink", (pool.colTeam && pool.colTeam.numInk) || "#ffffff");
+  }
+
+  const api = { digit, cellFor, highlights, periodWinners, PRIORITY, applyNumColors };
   if (typeof module !== "undefined") module.exports = api; else root.PoolLogic = api;
 })(typeof window !== "undefined" ? window : globalThis);

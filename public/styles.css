@@ -131,8 +131,8 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
   display: grid; place-content: center; font-family: var(--font-display); font-weight: 700; font-size: 17px;
   font-variant-numeric: tabular-nums; color: #fff; border-radius: 3px;
 }
-.num.c { background: var(--col); }
-.num.r { background: var(--row); }
+.num.c { background: var(--col-num-bg, var(--col)); color: var(--col-num-ink, #fff); }
+.num.r { background: var(--row-num-bg, var(--row)); color: var(--row-num-ink, #fff); }
 .num.hit { outline: 3px solid var(--win); outline-offset: -3px; }
 .corner { grid-column: 2; grid-row: 2; }
 

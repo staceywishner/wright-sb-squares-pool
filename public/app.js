@@ -104,6 +104,7 @@ const numbersShown = () => pool.rowNums && pool.colNums;
 function setTeamColors() {
   document.documentElement.style.setProperty("--row", pool.rowTeam.color);
   document.documentElement.style.setProperty("--col", pool.colTeam.color);
+  window.PoolLogic.applyNumColors(pool);
 }
 
 // Team logo: a real image when one is supplied (ESPN feed or organizer upload),
