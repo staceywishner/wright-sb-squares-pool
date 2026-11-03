@@ -195,7 +195,7 @@ h2 {
 .now .big { font-family: var(--font-display); font-size: 22px; font-weight: 700; line-height: 1.1; }
 .now .small { font-size: 13px; }
 .next { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.next li { display: grid; grid-template-columns: 14px 1fr auto; gap: 10px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
+.next li { display: grid; grid-template-columns: 14px minmax(0, 1fr) auto; gap: 8px; align-items: center; padding: 6px 0; border-bottom: 1px solid var(--line); }
 .next li:last-child { border-bottom: 0; }
 .sw { display: inline-block; flex: none; width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--line); }
 .sw.win { background: var(--win); } .sw.rev { background: var(--rev); }
@@ -204,6 +204,8 @@ h2 {
 .sw.pend { background: repeating-linear-gradient(135deg, var(--pending) 0 3px, var(--surface) 3px 6px); }
 .sw.open { background: var(--surface); }
 .next .what { font-size: 14px; min-width: 0; }
+/* Team + play on one line ("Seattle Seahawks touchdown"); shrinks a little on narrow phones. */
+.next .what .lbl { display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: clamp(12px, 3.7vw, 15px); font-weight: 600; letter-spacing: -0.01em; }
 .next .what small { display: block; color: var(--muted); font-size: 12px; }
 .next .who { font-weight: 700; text-align: right; font-size: 14px; }
 

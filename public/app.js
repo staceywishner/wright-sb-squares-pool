@@ -263,7 +263,8 @@ function renderNext() {
     if (!h) continue;
     const li = document.createElement("li");
     const swatch = document.createElement("span"); swatch.className = "sw " + kind;
-    const what = document.createElement("span"); what.className = "what"; what.textContent = label;
+    const what = document.createElement("span"); what.className = "what";
+    const lbl = document.createElement("span"); lbl.className = "lbl"; lbl.textContent = label; what.appendChild(lbl);
     const small = document.createElement("small"); small.textContent = sub; what.appendChild(small);
     const name = document.createElement("span"); name.className = "who"; name.textContent = who(sq(h.i, h.j));
     li.append(swatch, what, name);
