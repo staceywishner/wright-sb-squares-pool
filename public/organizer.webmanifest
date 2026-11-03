@@ -5,20 +5,20 @@
   "scope": "/organizer",
   "display": "standalone",
   "background_color": "#f4f6f2",
-  "theme_color": "#15211a",
+  "theme_color": "#ffb81c",
   "icons": [
     {
-      "src": "/icons/org-192.png",
+      "src": "/icons/org2-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icons/org-512.png",
+      "src": "/icons/org2-512.png",
       "sizes": "512x512",
       "type": "image/png"
     },
     {
-      "src": "/icons/org-maskable-512.png",
+      "src": "/icons/org2-maskable-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
