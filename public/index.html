@@ -50,10 +50,15 @@
   <section class="panel" aria-label="Who wins next">
     <h2>Winning now</h2>
     <div class="now" id="now">
-      <div>
+      <div class="now-cell">
+        <div class="tag">Winner</div>
         <div class="big" id="nowWho">—</div>
-        <div class="small" id="nowScore"></div>
       </div>
+      <div class="now-cell rev" id="nowRevCell">
+        <div class="tag">Reverse winner</div>
+        <div class="big" id="nowRev">—</div>
+      </div>
+      <div class="small now-score" id="nowScore"></div>
     </div>
     <h2>If the next score is…</h2>
     <ul class="next" id="nextList"></ul>

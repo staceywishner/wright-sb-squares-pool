@@ -219,10 +219,11 @@ function renderNext() {
   const w = byKind.win;
   $("now").hidden = false;
   $("nowWho").textContent = w ? who(sq(w.i, w.j)) : "—";
+  const rv = byKind.rev;
+  $("nowRev").textContent = rv ? who(sq(rv.i, rv.j)) : "Same square";
   $("nowScore").textContent = `${R} ${g.rowScore} – ${C} ${g.colScore}`;
 
   const rows = [
-    ["rev", "Reverse winner", "Same digits, flipped"],
     ["rowFG", `${R} field goal`, `${R} ${g.rowScore + 3} – ${C} ${g.colScore}`],
     ["rowTD", `${R} touchdown`, `${R} ${g.rowScore + 7} – ${C} ${g.colScore}`],
     ["colFG", `${C} field goal`, `${R} ${g.rowScore} – ${C} ${g.colScore + 3}`],
