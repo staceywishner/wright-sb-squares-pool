@@ -106,8 +106,8 @@ body.waiting .try, body.waiting .foot, body.waiting #liveChip { display: none; }
   display: grid; place-content: center; text-align: center; padding: 8px 6px; border-inline: 1px solid var(--line);
   font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.06em; font-size: 14px; color: var(--muted);
 }
-.clock strong { display: grid; font-size: clamp(20px, 6vw, 26px); line-height: 1.05; color: var(--ink); }
-.clock strong span { display: block; }
+.clock strong { display: block; font-size: clamp(16px, 4.6vw, 22px); line-height: 1.1; color: var(--ink); white-space: nowrap; }
+.clock strong span + span::before { content: " "; }
 .clock #clock { margin-top: 18px; font-variant-numeric: tabular-nums; }
 
 /* Board */
